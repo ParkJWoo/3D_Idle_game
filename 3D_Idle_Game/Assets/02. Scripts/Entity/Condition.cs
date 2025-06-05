@@ -10,6 +10,7 @@ public class Condition : MonoBehaviour
     public int maxValue;
     public float passiveValue;  //  마나 회복 등에 사용
     public Image uiBar;
+    public UICondition uiCondition; //  UI 연동용
 
     private void Start()
     {

@@ -39,8 +39,8 @@ public class PlayerFSM : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         currentState = PlayerState.Idle;
-        lastAttackTime = Time.time;
-        lastSkillTime = Time.time;
+        lastAttackTime = Time.time - attackDelay;
+        lastSkillTime = Time.time - skillDelay;
         StartCoroutine(StateLoop());
     }
 
@@ -72,7 +72,7 @@ public class PlayerFSM : MonoBehaviour
                     animator.SetBool("IsMoving", true);
                     animator.SetFloat("MoveSpeed", agent.velocity.magnitude);
 
-                    if(Vector3.Distance(transform.position, currentTarget.position) <= attackRange)
+                    if(!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
                     {
                         agent.ResetPath();
                         animator.SetFloat("MoveSpeed", 0f);
@@ -88,14 +88,23 @@ public class PlayerFSM : MonoBehaviour
                         break;
                     }
 
-                    transform.LookAt(currentTarget);
+                    float distance = Vector3.Distance(transform.position, currentTarget.position);
 
+                    if(distance > attackRange + agent.stoppingDistance)
+                    {
+                        currentState = PlayerState.Move;
+                        break;
+                    }
+
+                    transform.LookAt(currentTarget);
                     animator.SetBool("IsMoving", false);
 
                     if(Time.time - lastAttackTime >= attackDelay)
                     {
+                        Debug.Log("공격 시작!");
+                        animator.ResetTrigger("Attack");
                         animator.SetTrigger("Attack");
-                        Attack();
+                        StartCoroutine(DelayFire());
                         lastAttackTime = Time.time;
                     }
 
@@ -103,6 +112,7 @@ public class PlayerFSM : MonoBehaviour
                     {
                         currentState = PlayerState.Skill;
                     }
+
                     break;
 
                 case PlayerState.Skill:
@@ -116,9 +126,16 @@ public class PlayerFSM : MonoBehaviour
         }
     }
 
+    private IEnumerator DelayFire()
+    {
+        yield return new WaitForSeconds(0.3f);
+        Attack();
+    }
+
     private void FindClosestTarget()
     {
         var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        Debug.Log($"타겟 탐색: 발견한 적 수 : {enemies.Length}");
 
         if(enemies.Length == 0)
         {
@@ -138,7 +155,7 @@ public class PlayerFSM : MonoBehaviour
             arrow.GetComponent<Rigidbody>().velocity = (currentTarget.position - firePoint.position).normalized * 20f;
         }
     }
-    
+
     private void UseSkill()
     {
         if(mpCondition.curValue < skillManaCost)

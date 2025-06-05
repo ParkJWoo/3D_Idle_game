@@ -209,6 +209,7 @@ MonoBehaviour:
   maxValue: 100
   passiveValue: 1
   uiBar: {fileID: 1153024838}
+  uiCondition: {fileID: 0}
 --- !u!114 &148352281 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4315243356958218664, guid: 288e5e53018c4684ab25ce0b75c39028,
@@ -221,6 +222,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &195014984
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 195014985}
+  - component: {fileID: 195014986}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &195014985
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195014984}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.14392, y: 0.8391651, z: 0.001049757}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &195014986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195014984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f449d2b23f84a0041ade5b7d0efe79dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ExpToLevelUP: 100
 --- !u!1 &216952174
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,6 +358,7 @@ MonoBehaviour:
   maxValue: 100
   passiveValue: 1
   uiBar: {fileID: 148352281}
+  uiCondition: {fileID: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -1338,6 +1385,7 @@ MonoBehaviour:
   maxValue: 100
   passiveValue: 1
   uiBar: {fileID: 1158645674}
+  uiCondition: {fileID: 0}
 --- !u!114 &1791741060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1364,6 +1412,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27ff11d169e0ffc489d400ceb0524208, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHP: 100
+  currentHP: 0
   condition: {fileID: 1791741060}
 --- !u!1 &1853316437
 GameObject:
@@ -2340,7 +2390,7 @@ PrefabInstance:
     - target: {fileID: 5028040876076053236, guid: 6fbe6f66513d8974b8b344786b397718,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 1.72
       objectReference: {fileID: 0}
     - target: {fileID: 5028040876076053236, guid: 6fbe6f66513d8974b8b344786b397718,
         type: 3}
@@ -2350,7 +2400,7 @@ PrefabInstance:
     - target: {fileID: 5028040876076053236, guid: 6fbe6f66513d8974b8b344786b397718,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 10.77
       objectReference: {fileID: 0}
     - target: {fileID: 5028040876076053236, guid: 6fbe6f66513d8974b8b344786b397718,
         type: 3}
@@ -11029,3 +11079,4 @@ SceneRoots:
   - {fileID: 1853316439}
   - {fileID: 108500391}
   - {fileID: 1258510652417279643}
+  - {fileID: 195014985}
