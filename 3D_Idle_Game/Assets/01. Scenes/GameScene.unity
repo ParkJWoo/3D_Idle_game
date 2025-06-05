@@ -6627,9 +6627,9 @@ MonoBehaviour:
   currentTarget: {fileID: 0}
   hpCondition: {fileID: 1563964751}
   mpCondition: {fileID: 310999393}
-  arrowPrefab: {fileID: 7241326905865662960, guid: b0a1765d0319afa46ae3297f642f8dc0,
+  arrowPrefab: {fileID: 3411248080694194688, guid: 61792a7b8f2c56c4a9809f4070b19fda,
     type: 3}
-  skillProjectilePrefab: {fileID: 7241326905865662960, guid: b0a1765d0319afa46ae3297f642f8dc0,
+  skillProjectilePrefab: {fileID: 3411248080694194688, guid: 61792a7b8f2c56c4a9809f4070b19fda,
     type: 3}
   firePoint: {fileID: 1190817335}
 --- !u!195 &6922437462506611071
