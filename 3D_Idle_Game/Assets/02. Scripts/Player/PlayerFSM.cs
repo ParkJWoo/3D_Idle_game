@@ -102,8 +102,7 @@ public class PlayerFSM : MonoBehaviour
                     if(Time.time - lastAttackTime >= attackDelay)
                     {
                         Debug.Log("공격 시작!");
-                        animator.ResetTrigger("Attack");
-                        animator.SetTrigger("Attack");
+                        animator.SetBool("Attack", true);
                         StartCoroutine(DelayFire());
                         lastAttackTime = Time.time;
                     }
@@ -150,10 +149,12 @@ public class PlayerFSM : MonoBehaviour
     {
         if(currentTarget != null)
         {
-            GameObject arrow = Instantiate(arrowPrefab, firePoint.position, firePoint.rotation);
-            arrow.transform.LookAt(currentTarget);
+            GameObject arrow = Instantiate(arrowPrefab, firePoint.position, Quaternion.LookRotation(currentTarget.position - firePoint.position));
+
             arrow.GetComponent<Rigidbody>().velocity = (currentTarget.position - firePoint.position).normalized * 20f;
         }
+
+        animator.SetBool("Attack", false);
     }
 
     private void UseSkill()
@@ -172,7 +173,7 @@ public class PlayerFSM : MonoBehaviour
             arrow.GetComponent<Rigidbody>().velocity = arrow.transform.forward * 15f;
         }
 
-        animator.SetTrigger("Skill");
+        //animator.SetTrigger("Skill");
     }
 
     public bool IsDead()
