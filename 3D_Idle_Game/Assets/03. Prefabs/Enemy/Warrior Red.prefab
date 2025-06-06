@@ -1289,6 +1289,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3133529950453945994}
   - component: {fileID: 4388321824015110833}
+  - component: {fileID: 6454515238326646083}
+  - component: {fileID: 7216103933598649268}
   m_Layer: 12
   m_Name: Warrior_Weapon
   m_TagString: Untagged
@@ -1365,6 +1367,39 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.00000011920929, y: -0.25621593, z: 0.000000014901161}
     m_Extent: {x: 0.22819102, y: 0.7619151, z: 0.08429241}
   m_DirtyAABB: 0
+--- !u!65 &6454515238326646083
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6360261537474476008}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.45638204, y: 1.5238302, z: 0.16858482}
+  m_Center: {x: 1.7915498, y: 0.73254067, z: 0.000000014901161}
+--- !u!114 &7216103933598649268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6360261537474476008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f60edd52839e204aaf4132d91e89388, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6666520467708200183
 GameObject:
   m_ObjectHideFlags: 0
@@ -1379,6 +1414,7 @@ GameObject:
   - component: {fileID: 1581085441195526448}
   - component: {fileID: 166877173147321414}
   - component: {fileID: 2255986630565100205}
+  - component: {fileID: 5668216898994248240}
   m_Layer: 0
   m_Name: Warrior Red
   m_TagString: Enemy
@@ -1555,8 +1591,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6392272826bc9a041b1658acb8428a1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 30
-  currentHP: 0
+  characterData: {fileID: 11400000, guid: 65da898a75bb53f4e966e745fddfa221, type: 2}
   rewardGold: 100
   rewardExp: 10
 --- !u!114 &2255986630565100205
@@ -1573,6 +1608,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackRange: 1.5
   attackDelay: 2
+  attackHitBox: {fileID: 6360261537474476008}
+--- !u!136 &5668216898994248240
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6666520467708200183}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2.0558367
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.9056437, z: 0}
 --- !u!1 &6785380423485885413
 GameObject:
   m_ObjectHideFlags: 0

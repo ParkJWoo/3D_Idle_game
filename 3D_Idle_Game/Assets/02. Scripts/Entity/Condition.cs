@@ -22,6 +22,14 @@ public class Condition : MonoBehaviour
         uiBar.fillAmount = GetPercentage();
     }
 
+    private void UpdateUI()
+    {
+        if(uiBar != null)
+        {
+            uiBar.fillAmount = GetPercentage();
+        }
+    }
+
     private float GetPercentage()
     {
         return (float)curValue / maxValue;
@@ -30,15 +38,18 @@ public class Condition : MonoBehaviour
     public void Add(int value)
     {
         curValue = Mathf.Min(curValue + value, maxValue);
+        UpdateUI();
     }
 
     public void Subtract(int value)
     {
         curValue = Mathf.Max(curValue - value, 0);
+        UpdateUI();
     }
 
     public void Set(int value)
     {
         curValue = Mathf.Clamp(value, 0, maxValue);
+        UpdateUI();
     }
 }

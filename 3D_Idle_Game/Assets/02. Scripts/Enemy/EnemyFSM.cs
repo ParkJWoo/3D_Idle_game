@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -19,6 +20,8 @@ public class EnemyFSM : MonoBehaviour
     public float attackRange = 1.5f;
     public float attackDelay = 2f;
     private float lastAttackTime;
+
+    public GameObject attackHitBox;     //  칼에 달린 히트박스
 
     private void Start()
     {
@@ -62,7 +65,7 @@ public class EnemyFSM : MonoBehaviour
 
                     if (Time.time - lastAttackTime >= attackDelay)
                     {
-                        animator.SetTrigger("Attack");
+                        Attack();
                         lastAttackTime = Time.time;
                     }
 
@@ -76,6 +79,13 @@ public class EnemyFSM : MonoBehaviour
         }
     }
 
+    private void Attack()
+    {
+        animator.SetTrigger("Attack");
+        StartCoroutine(EnableHitbox());
+    }
+
+    // 애니메이션 이벤트 무시용 (에러 방지)
     public void DealDamage()
     {
         //if(playerFSM != null && !playerFSM.IsDead())
@@ -88,5 +98,12 @@ public class EnemyFSM : MonoBehaviour
         //        Debug.Log("적이 플레이어에게 데미지를 입힘!");
         //    }
         //}
+    }
+
+    private IEnumerator EnableHitbox()
+    {
+        attackHitBox.SetActive(true);
+        yield return new WaitForSeconds(0.2f);
+        attackHitBox.SetActive(false);
     }
 }

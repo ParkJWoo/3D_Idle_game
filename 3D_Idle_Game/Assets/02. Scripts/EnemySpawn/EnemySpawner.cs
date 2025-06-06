@@ -5,57 +5,54 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     [Header("Spawner Settings")]
-    public string monsterPoolKey = "Enemy";
+    public string enemyPoolKey = "Enemy";
     public Transform[] spawnPoints;
     public float respawnDelay = 5f;
 
     private List<GameObject> spawnedEnemies = new List<GameObject>();
-    private bool allEnemiesDead = false;
+    private bool isRespawning = false;
 
     private void Start()
     {
-        SpawnAllEnemy();
+        SpawnAllEnemies();
     }
 
     private void Update()
     {
-        if(!allEnemiesDead)
+        if(!isRespawning && AllEnemiesAreDead())
         {
-            allEnemiesDead = CheckAllEnemiesDead();
-
-            if(allEnemiesDead)
-            {
-                Invoke(nameof(RespawnAllEnemies), respawnDelay);
-            }
+            isRespawning = true;
+            Invoke(nameof(RespawnAllEnemies), respawnDelay);
         }
     }
 
-
-    private void SpawnAllEnemy()
+    private void SpawnAllEnemies()
     {
-        foreach (Transform spawnPoint in spawnPoints)
+        spawnedEnemies.Clear();
+
+        foreach(Transform spawnPoint in spawnPoints)
         {
-            GameObject monster = ObjectPool.Instance.SpawnFromPool(monsterPoolKey, spawnPoint.position, spawnPoint.rotation);
-            spawnedEnemies.Add(monster);
+            GameObject enemy = ObjectPool.Instance.SpawnFromPool(enemyPoolKey, spawnPoint.position, spawnPoint.rotation);
+            spawnedEnemies.Add(enemy);
         }
     }
 
-    private bool CheckAllEnemiesDead()
+    private bool AllEnemiesAreDead()
     {
-        for(int i = spawnedEnemies.Count - 1; i >= 0; i--)
+        foreach(GameObject enemy in spawnedEnemies)
         {
-            if (spawnedEnemies[i] == null || !spawnedEnemies[i].activeInHierarchy)
+            if(enemy != null && enemy.activeInHierarchy)
             {
-                spawnedEnemies.RemoveAt(i);
+                return false;
             }
         }
 
-        return spawnedEnemies.Count == 0;
+        return true;
     }
 
     private void RespawnAllEnemies()
     {
-        allEnemiesDead = false;
-        SpawnAllEnemy();
+        SpawnAllEnemies();
+        isRespawning = false;
     }
 }

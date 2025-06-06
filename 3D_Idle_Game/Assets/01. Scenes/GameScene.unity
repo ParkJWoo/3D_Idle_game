@@ -981,14 +981,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81447b03661348c4db83c4b43d280500, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterPoolKey: Enemy
+  enemyPoolKey: Enemy
   spawnPoints:
   - {fileID: 44007382}
   - {fileID: 1702415773}
   - {fileID: 1990007323}
   - {fileID: 1042492213}
   - {fileID: 1349975769}
-  respawnDelay: 5
+  respawnDelay: 2
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -2016,8 +2016,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27ff11d169e0ffc489d400ceb0524208, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 100
-  currentHP: 0
+  characterData: {fileID: 11400000, guid: 95bc19b94e4540e479ef24daf8523a0e, type: 2}
   condition: {fileID: 1791741060}
 --- !u!1 &1853316437
 GameObject:
@@ -4752,6 +4751,7 @@ GameObject:
   - component: {fileID: 1791741060}
   - component: {fileID: 6922437462506611070}
   - component: {fileID: 6922437462506611071}
+  - component: {fileID: 6922437462506611072}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -7363,6 +7363,29 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!136 &6922437462506611072
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3487410532309246695}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1.8547039
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.8997288, z: 0}
 --- !u!1 &6947449404272691467
 GameObject:
   m_ObjectHideFlags: 0

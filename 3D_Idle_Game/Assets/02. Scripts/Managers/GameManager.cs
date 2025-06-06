@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public int Level { get; private set; } = 1;
     public int CurrentStage { get; private set; } = 1;
     public int Exp { get; private set; } = 0;
+
     public int ExpToLevelUP = 100;
 
     private void Awake()
