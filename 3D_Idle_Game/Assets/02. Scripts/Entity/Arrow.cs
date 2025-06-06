@@ -1,37 +1,80 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class Arrow : MonoBehaviour
 {
-    public int damage = 10;
-    public float lifeTime = 5f;
-    public float speed = 20f;
+    [Header("Arrow Settings")]
+    [SerializeField] private float lifeTime = 5f;
+    [SerializeField] private float damage = 10f;
 
-    private void Start()
+    private Rigidbody rigidbody;
+
+    private void Awake()
     {
-        Destroy(gameObject, lifeTime);
-        GetComponent<Rigidbody>().velocity = transform.rotation * Vector3.forward * speed;
+        rigidbody = GetComponent<Rigidbody>();
+    }
+
+    private void OnEnable()
+    {
+        //  √ ±‚»≠
+        CancelInvoke();
+        Invoke(nameof(ReleasePool), lifeTime);
+    }
+
+    private void OnDisable()
+    {
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.angularVelocity = Vector3.zero;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Enemy"))
         {
-            var enemy = other.GetComponent<Enemy>();
+            Character target = other.GetComponent<Character>();
 
-            if(enemy != null)
+            if(target != null)
             {
-                enemy.TakeDamage(damage);
-                Destroy(gameObject);
+                target.TakeDamage((int)damage);
             }
+
+            ReleasePool();
+        }
+
+        else if(other.CompareTag("Wall") || other.CompareTag("Ground"))
+        {
+            ReleasePool();
         }
     }
 
-    //public static GameObject Spawn(GameObject prefab, Transform firePoint)
-    //{
-    //    Quaternion rotation = Quaternion.LookRotation(firePoint.forward);
+    private void ReleasePool()
+    {
+        ObjectPool.Instance.ReturnToPool("Arrow", this.gameObject);
+    }
 
-    //    return Instantiate(prefab, firePoint.position, rotation);
-    //}
+    public void Fire(Vector3 direction, float speed)
+    {
+        transform.rotation = Quaternion.LookRotation(direction);
+        rigidbody.velocity = direction.normalized * speed;
+    }
+
+    public static void SpawnAndFire(Vector3 position, Quaternion rotation, Vector3  direction, float speed)
+    {
+        GameObject arrow = ObjectPool.Instance.SpawnFromPool("Arrow", position, rotation);
+        Arrow arrowScript = arrow.GetComponent<Arrow>();
+
+        if(arrowScript != null)
+        {
+            arrowScript.Fire(direction, speed);
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * 2f);
+    }
 }

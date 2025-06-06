@@ -149,12 +149,17 @@ public class PlayerFSM : MonoBehaviour
     {
         if(currentTarget != null)
         {
-            GameObject arrow = Instantiate(arrowPrefab, firePoint.position, Quaternion.LookRotation(currentTarget.position - firePoint.position));
+            //Vector3 direction = (currentTarget.position - firePoint.position).normalized;
+            //Quaternion rotation = Quaternion.LookRotation(direction);
 
-            arrow.GetComponent<Rigidbody>().velocity = (currentTarget.position - firePoint.position).normalized * 20f;
+            Vector3 direction = firePoint.position;
+            Quaternion rotation = firePoint.rotation;
+
+            //  오브젝트 풀 기반 화살 발사
+            Arrow.SpawnAndFire(firePoint.position, rotation, direction, 20f);
         }
 
-        animator.SetBool("Attack", false);
+        //animator.SetBool("Attack", false);
     }
 
     private void UseSkill()
