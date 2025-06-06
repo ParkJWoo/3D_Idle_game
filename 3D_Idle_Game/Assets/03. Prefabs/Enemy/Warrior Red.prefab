@@ -1377,6 +1377,8 @@ GameObject:
   - component: {fileID: 232274370165170467}
   - component: {fileID: 6926634432919042099}
   - component: {fileID: 1581085441195526448}
+  - component: {fileID: 166877173147321414}
+  - component: {fileID: 2255986630565100205}
   m_Layer: 0
   m_Name: Warrior Red
   m_TagString: Enemy
@@ -1429,7 +1431,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6666520467708200183}
-  m_Enabled: 0
+  m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 3.5
@@ -1541,6 +1543,36 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &166877173147321414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6666520467708200183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6392272826bc9a041b1658acb8428a1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHP: 30
+  currentHP: 0
+  rewardGold: 100
+  rewardExp: 10
+--- !u!114 &2255986630565100205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6666520467708200183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18a593a84b841d948aa20b7998f788e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackRange: 1.5
+  attackDelay: 2
 --- !u!1 &6785380423485885413
 GameObject:
   m_ObjectHideFlags: 0

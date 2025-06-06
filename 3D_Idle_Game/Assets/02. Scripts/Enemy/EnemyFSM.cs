@@ -48,6 +48,8 @@ public class EnemyFSM : MonoBehaviour
                 case EnemyState.Move:
                     agent.SetDestination(playerFSM.transform.position);
 
+                    animator.SetBool("IsMoving", true);
+
                     if (Vector3.Distance(transform.position, playerFSM.transform.position) <= attackRange)
                     {
                         agent.ResetPath();
@@ -56,9 +58,11 @@ public class EnemyFSM : MonoBehaviour
                     break;
 
                 case EnemyState.Attack:
+                    transform.LookAt(playerFSM.transform);
+
                     if (Time.time - lastAttackTime >= attackDelay)
                     {
-                        Attack();
+                        animator.SetTrigger("Attack");
                         lastAttackTime = Time.time;
                     }
 
@@ -72,8 +76,17 @@ public class EnemyFSM : MonoBehaviour
         }
     }
 
-    private void Attack()
+    public void DealDamage()
     {
-        animator.SetTrigger("Attack");
+        //if(playerFSM != null && !playerFSM.IsDead())
+        //{
+        //    float distance = Vector3.Distance(transform.position, playerFSM.transform.position);
+
+        //    if(distance <= attackRange)
+        //    {
+        //        playerFSM.hpCondition.Subtract(10);
+        //        Debug.Log("적이 플레이어에게 데미지를 입힘!");
+        //    }
+        //}
     }
 }

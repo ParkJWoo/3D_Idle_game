@@ -102,7 +102,7 @@ public class PlayerFSM : MonoBehaviour
                     if(Time.time - lastAttackTime >= attackDelay)
                     {
                         Debug.Log("공격 시작!");
-                        animator.SetBool("Attack", true);
+                        animator.SetTrigger("Attack");
                         StartCoroutine(DelayFire());
                         lastAttackTime = Time.time;
                     }
@@ -149,9 +149,6 @@ public class PlayerFSM : MonoBehaviour
     {
         if(currentTarget != null)
         {
-            //Vector3 direction = (currentTarget.position - firePoint.position).normalized;
-            //Quaternion rotation = Quaternion.LookRotation(direction);
-
             Vector3 direction = firePoint.position;
             Quaternion rotation = firePoint.rotation;
 
@@ -159,7 +156,6 @@ public class PlayerFSM : MonoBehaviour
             Arrow.SpawnAndFire(firePoint.position, rotation, direction, 20f);
         }
 
-        //animator.SetBool("Attack", false);
     }
 
     private void UseSkill()
@@ -177,8 +173,6 @@ public class PlayerFSM : MonoBehaviour
             arrow.transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y + i * 10, 0);
             arrow.GetComponent<Rigidbody>().velocity = arrow.transform.forward * 15f;
         }
-
-        //animator.SetTrigger("Skill");
     }
 
     public bool IsDead()
