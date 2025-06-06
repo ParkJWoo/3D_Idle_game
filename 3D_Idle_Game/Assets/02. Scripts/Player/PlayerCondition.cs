@@ -13,9 +13,9 @@ public class PlayerCondition : MonoBehaviour, IDamagable
 {
     public UICondition uiCondition;
 
-    Condition hp => uiCondition.hp;
-    Condition mp => uiCondition.mp;
-    Condition exp => uiCondition.exp;
+    public Condition hp => uiCondition.hp;
+    public Condition mp => uiCondition.mp;
+    public Condition exp => uiCondition.exp;
 
     public int level = 1;
 
@@ -29,36 +29,6 @@ public class PlayerCondition : MonoBehaviour, IDamagable
 
     private void Update()
     {
-        hpTimer += Time.deltaTime;
-        
-        if(hpTimer >= 1f)
-        {
-            hp.Subtract(1);
-            hpTimer = 0f;
-        }
-
-        mpTimer += Time.deltaTime;
-
-        if(mpTimer >= 0.5f)
-        {
-            mp.Subtract(1);
-            mpTimer = 0f;
-        }
-
-        expTimer += Time.deltaTime;
-
-        if(expTimer >= 1f)
-        {
-            exp.Add(5);
-            expTimer = 0f;
-        }
-
-
-        if(hp.curValue <= 0)
-        {
-            Die();
-        }
-
         if(exp.curValue >= exp.maxValue)
         {
             LevelUP();

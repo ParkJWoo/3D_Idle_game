@@ -11,15 +11,28 @@ public class Condition : MonoBehaviour
     public float passiveValue;  //  마나 회복 등에 사용
     public Image uiBar;
     public UICondition uiCondition; //  UI 연동용
+    public CharacterData characterData;
 
     private void Start()
     {
-        curValue = startValue;
+        if(characterData != null)
+        {
+            maxValue = characterData.maxHP;
+            startValue = characterData.maxHP;
+            curValue = characterData.maxHP;
+        }
+
+        else
+        {
+            Debug.LogWarning("[Condition] CharacterData가 설정되지 않았습니다.");
+        }
+
+        UpdateUI();
     }
 
     private void Update()
     {
-        uiBar.fillAmount = GetPercentage();
+        UpdateUI();
     }
 
     private void UpdateUI()

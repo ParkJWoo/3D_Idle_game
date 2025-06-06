@@ -101,7 +101,6 @@ public class PlayerFSM : MonoBehaviour
 
                     if(Time.time - lastAttackTime >= attackDelay)
                     {
-                        Debug.Log("공격 시작!");
                         animator.SetTrigger("Attack");
                         StartCoroutine(DelayFire());
                         lastAttackTime = Time.time;
@@ -134,7 +133,7 @@ public class PlayerFSM : MonoBehaviour
     private void FindClosestTarget()
     {
         var enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        Debug.Log($"타겟 탐색: 발견한 적 수 : {enemies.Length}");
+        //Debug.Log($"타겟 탐색: 발견한 적 수 : {enemies.Length}");
 
         if(enemies.Length == 0)
         {
@@ -149,11 +148,9 @@ public class PlayerFSM : MonoBehaviour
     {
         if(currentTarget != null)
         {
-            Vector3 direction = firePoint.position;
-            Quaternion rotation = firePoint.rotation;
+            Vector3 direction = (currentTarget.position - firePoint.position).normalized;
 
-            //  오브젝트 풀 기반 화살 발사
-            Arrow.SpawnAndFire(firePoint.position, rotation, direction, 20f);
+            Arrow.SpawnAndFire(firePoint.position, Quaternion.LookRotation(direction), direction, 20f);
         }
 
     }
@@ -178,5 +175,10 @@ public class PlayerFSM : MonoBehaviour
     public bool IsDead()
     {
         return hpCondition.curValue <= 0;
+    }
+
+    //  불필요하지만 에러 방지용 코드
+    public void FireProjectile()
+    {
     }
 }

@@ -7,9 +7,9 @@ public abstract class Character : MonoBehaviour
     [Header("Character Data")]
     public CharacterData characterData;
 
-    protected int maxHP;
-    protected int currentHP;
-    protected int attackPower;
+    [HideInInspector] public int maxHP;
+    [HideInInspector] public int currentHP;
+    public int attackPower;
 
     protected Animator animator;
 
@@ -35,7 +35,12 @@ public abstract class Character : MonoBehaviour
     public virtual void TakeDamage(int amount)
     {
         currentHP -= amount;
-        Debug.Log($"[{gameObject.name}] 피해 입음: {amount}, 남은 HP: {currentHP}");
+
+        //  플레이어의 경우: UI도 갱신
+        if(this is Player player && player.condition != null && player.condition.hp != null)
+        {
+            player.condition.hp.Subtract(amount);
+        }
 
         if(currentHP <= 0)
         {
@@ -49,7 +54,7 @@ public abstract class Character : MonoBehaviour
         
         if(animator != null)
         {
-            animator.SetTrigger("Die");
+            animator.SetTrigger("IsDead");
             Destroy(gameObject, 1.5f);
         }
 

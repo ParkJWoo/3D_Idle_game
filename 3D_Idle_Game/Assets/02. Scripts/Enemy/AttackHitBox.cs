@@ -6,13 +6,14 @@ public class AttackHitBox : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        Debug.Log($"Trigger 발생 : {other.name}");
+
+        var player = other.GetComponentInParent<Player>();
+
+        if(player != null)
         {
-            Character target = other.GetComponent<Character>();
-            if (target != null)
-            {
-                target.TakeDamage(10); // 고정 데미지
-            }
+            Debug.Log("플레이어 감지됨!");
+            player.TakeDamage(10);
         }
     }
 }

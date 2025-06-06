@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : Character
@@ -8,11 +9,22 @@ public class Enemy : Character
     public int rewardGold = 100;
     public int rewardExp = 10;
 
+
     protected override void Die()
     {
         base.Die();
 
-        Debug.Log("[Enemy] 사망 처리");
-        Debug.Log($"▶ 골드 +{rewardGold}, 경험치 +{rewardExp}");
+        //  보상 지급
+        CharacterManager.Instance?.AddExp(rewardExp);
+        CharacterManager.Instance?.AddGold(rewardGold);
+
+        StartCoroutine(ReleaseToPoolAfterDelay(1.5f));
+       
+    }
+
+    private IEnumerator ReleaseToPoolAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ObjectPool.Instance.ReturnToPool("Enemy", gameObject);
     }
 }

@@ -33,7 +33,21 @@ public class EnemySpawner : MonoBehaviour
         foreach(Transform spawnPoint in spawnPoints)
         {
             GameObject enemy = ObjectPool.Instance.SpawnFromPool(enemyPoolKey, spawnPoint.position, spawnPoint.rotation);
-            spawnedEnemies.Add(enemy);
+
+            if(enemy != null)
+            {
+                if(enemy.TryGetComponent(out Character character))
+                {
+                    character.currentHP = character.maxHP;
+                }
+
+                spawnedEnemies.Add(enemy);
+            }
+
+            else
+            {
+                Debug.LogWarning("풀에서 몬스터를 가져올 수 없습니다. 풀의 크기를 늘려야 합니다.");
+            }
         }
     }
 
@@ -52,7 +66,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void RespawnAllEnemies()
     {
-        SpawnAllEnemies();
         isRespawning = false;
+        SpawnAllEnemies();
     }
 }

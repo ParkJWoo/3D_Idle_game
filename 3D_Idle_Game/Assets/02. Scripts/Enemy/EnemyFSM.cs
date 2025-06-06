@@ -21,6 +21,7 @@ public class EnemyFSM : MonoBehaviour
     public float attackDelay = 2f;
     private float lastAttackTime;
 
+    [Header("Weapon")]
     public GameObject attackHitBox;     //  칼에 달린 히트박스
 
     private void Start()
@@ -34,28 +35,29 @@ public class EnemyFSM : MonoBehaviour
 
     private IEnumerator StateLoop()
     {
-        while(true)
+        while (true)
         {
-            if(playerFSM == null || playerFSM.IsDead())
+            if (playerFSM == null || playerFSM.IsDead())
             {
                 currentState = EnemyState.Idle;
                 agent.ResetPath();
                 yield break;
             }
 
-            switch(currentState)
+            switch (currentState)
             {
                 case EnemyState.Idle:
+                    animator.SetBool("IsMoving", false);
                     break;
 
                 case EnemyState.Move:
                     agent.SetDestination(playerFSM.transform.position);
-
                     animator.SetBool("IsMoving", true);
 
                     if (Vector3.Distance(transform.position, playerFSM.transform.position) <= attackRange)
                     {
                         agent.ResetPath();
+                        animator.SetBool("IsMoving", false);
                         currentState = EnemyState.Attack;
                     }
                     break;
@@ -65,45 +67,32 @@ public class EnemyFSM : MonoBehaviour
 
                     if (Time.time - lastAttackTime >= attackDelay)
                     {
-                        Attack();
                         lastAttackTime = Time.time;
+                        animator.SetTrigger("Attack");
+                        StartCoroutine(EnableHitbox());
                     }
 
-                    if(Vector3.Distance(transform.position, playerFSM.transform.position) > attackRange)
+                    if (Vector3.Distance(transform.position, playerFSM.transform.position) > attackRange)
                     {
                         currentState = EnemyState.Move;
                     }
                     break;
             }
+
             yield return null;
         }
     }
-
-    private void Attack()
-    {
-        animator.SetTrigger("Attack");
-        StartCoroutine(EnableHitbox());
-    }
-
-    // 애니메이션 이벤트 무시용 (에러 방지)
-    public void DealDamage()
-    {
-        //if(playerFSM != null && !playerFSM.IsDead())
-        //{
-        //    float distance = Vector3.Distance(transform.position, playerFSM.transform.position);
-
-        //    if(distance <= attackRange)
-        //    {
-        //        playerFSM.hpCondition.Subtract(10);
-        //        Debug.Log("적이 플레이어에게 데미지를 입힘!");
-        //    }
-        //}
-    }
-
     private IEnumerator EnableHitbox()
     {
-        attackHitBox.SetActive(true);
-        yield return new WaitForSeconds(0.2f);
-        attackHitBox.SetActive(false);
+        if (attackHitBox != null)
+        {
+            Collider collider = attackHitBox.GetComponent<Collider>();
+            collider.enabled = true;
+            yield return new WaitForSeconds(0.3f);
+            collider.enabled = false;
+        }
     }
+
+    // 애니메이션 이벤트에서 호출되어도 에러 방지
+    public void DealDamage() { }
 }
