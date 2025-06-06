@@ -28,9 +28,11 @@ public class ObjectPool : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        InitializePools();
     }
 
-    private void Start()
+    private void InitializePools()
     {
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
 
