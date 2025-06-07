@@ -21,7 +21,8 @@ public enum ConsumableType
 {
     None, 
     Health,
-    Mana
+    Mana, 
+    AttackPower
 }
 
 [Serializable]
@@ -36,6 +37,7 @@ public class StatModifier
 {
     public StatType type;
     public int value;
+    public float duration;
 }
 
 [CreateAssetMenu(fileName = "Item", menuName ="Scriptable Object/ItemData", order = 0)]

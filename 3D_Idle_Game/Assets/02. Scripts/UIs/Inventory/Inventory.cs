@@ -111,7 +111,10 @@ public class Inventory : MonoBehaviour
                 case ConsumableType.Mana:
                     PlayerStat.Instance.ManaHeal((int)con.value);
                     break;
-                    // 다른 타입이 있다면 여기에 추가
+                case ConsumableType.AttackPower:
+                    // 햄버거 버프: 공격력 20 증가, 30초 지속
+                    PlayerStat.Instance.TemporaryAttackPowerBuff((int)con.value, 30f);
+                    break;
             }
         }
 
@@ -184,6 +187,9 @@ public class Inventory : MonoBehaviour
                     break;
                 case ConsumableType.Mana:
                     PlayerStat.Instance.ManaHeal((int)effect.value);
+                    break;
+                case ConsumableType.AttackPower:
+                    PlayerStat.Instance.TemporaryAttackPowerBuff((int)effect.value, 30f);  // 30초 버프
                     break;
             }
         }

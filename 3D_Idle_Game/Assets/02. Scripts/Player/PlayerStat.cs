@@ -85,6 +85,23 @@ public class PlayerStat : MonoBehaviour
         }
     }
 
+    public void TemporaryAttackPowerBuff(int amount, float duration)
+    {
+        StartCoroutine(ApplyAttackPowerBuffCoroutine(amount, duration));
+    }
+
+    private IEnumerator ApplyAttackPowerBuffCoroutine(int amount, float duration)
+    {
+        currentAttackPower += amount;
+        Debug.Log($"[버프] 공격력 +{amount}, 지속 시간: {duration}초");
+
+        yield return new WaitForSeconds(duration);
+
+        currentAttackPower -= amount;
+        currentAttackPower = Mathf.Max(0, currentAttackPower);
+        Debug.Log($"[버프 종료] 공격력 원상복귀");
+    }
+
     public void ApplyModifiers(StatModifier[] modifiers)
     {
         ApplyModifiers(modifiers, "");
