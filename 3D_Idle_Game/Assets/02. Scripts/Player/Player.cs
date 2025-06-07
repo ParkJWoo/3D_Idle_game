@@ -18,7 +18,7 @@ public class Player : Character
         condition = GetComponent<PlayerCondition>();
     }
 
-    protected override void Die()
+    public override void Die()
     {
         Debug.Log("[Player] »ç¸Á Ã³¸®");
 

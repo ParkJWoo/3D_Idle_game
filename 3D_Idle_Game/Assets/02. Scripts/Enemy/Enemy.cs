@@ -10,7 +10,7 @@ public class Enemy : Character
     public int rewardExp = 10;
 
 
-    protected override void Die()
+    public override void Die()
     {
         base.Die();
 
@@ -19,7 +19,6 @@ public class Enemy : Character
         CharacterManager.Instance?.AddGold(rewardGold);
 
         StartCoroutine(ReleaseToPoolAfterDelay(1.5f));
-       
     }
 
     private IEnumerator ReleaseToPoolAfterDelay(float delay)

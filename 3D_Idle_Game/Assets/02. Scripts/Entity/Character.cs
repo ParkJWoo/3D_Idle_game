@@ -48,7 +48,7 @@ public abstract class Character : MonoBehaviour
         }
     }
 
-    protected virtual void Die()
+    public virtual void Die()
     {
         Debug.Log($"[{gameObject.name}] »ç¸Á Ã³¸®");
         

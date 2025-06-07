@@ -9,6 +9,16 @@ public class TextUIs : MonoBehaviour
     [SerializeField] private TextMeshProUGUI stageText;
     [SerializeField] private TextMeshProUGUI goldText;
     [SerializeField] private TextMeshProUGUI levelText;
+    [SerializeField] private TextMeshProUGUI equippedItemListText;
+
+    private void Start()
+    {
+        //  PlayerStat이 존재하면 연결해준다!
+        if(PlayerStat.Instance != null)
+        {
+            PlayerStat.Instance.equippedItemListText = equippedItemListText;
+        }
+    }
 
     public void SetStage(int stageNum)
     {
