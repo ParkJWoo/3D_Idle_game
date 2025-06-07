@@ -12,6 +12,11 @@ public class PlayerStat : MonoBehaviour
     public int currentHP;
     public int maxHP;
 
+    [Header("Base MP Stats")]
+    public int baseMP = 100;
+    public int currentMP;
+    public int maxMP;
+
     [Header("Base Attack Power Stats")]
     public int baseAttackPower = 10;
     public int currentAttackPower;
@@ -39,9 +44,12 @@ public class PlayerStat : MonoBehaviour
         maxHP = baseHP;
         currentHP = maxHP;
         currentAttackPower = baseAttackPower;
+        currentMP = maxMP;
 
         CharacterManager.Instance.Player.condition.hp.maxValue = maxHP;
         CharacterManager.Instance.Player.condition.hp.Set(currentHP);
+        CharacterManager.Instance.Player.condition.mp.maxValue = maxMP;
+        CharacterManager.Instance.Player.condition.mp.Set(currentMP);
     }
 
     public void TakeDamage(int amount)
@@ -62,7 +70,19 @@ public class PlayerStat : MonoBehaviour
     {
         currentHP += amount;
         currentHP = Mathf.Clamp(currentHP, 0, maxHP);
-        CharacterManager.Instance.Player.condition.hp.Set(currentHP);
+
+        if (CharacterManager.Instance.Player != null && CharacterManager.Instance.Player.condition != null)
+        {
+            CharacterManager.Instance.Player.condition.hp.Set(currentHP);
+        }
+    }
+
+    public void ManaHeal(int amount)
+    {
+        if (CharacterManager.Instance.Player != null && CharacterManager.Instance.Player.condition != null)
+        {
+            CharacterManager.Instance.Player.condition.mp.Add(amount); // ¡ç ¹Ýµå½Ã Add()
+        }
     }
 
     public void ApplyModifiers(StatModifier[] modifiers)
@@ -81,6 +101,12 @@ public class PlayerStat : MonoBehaviour
                     currentHP = Mathf.Clamp(currentHP, 0, maxHP);
                     CharacterManager.Instance.Player.condition.hp.maxValue = maxHP;
                     CharacterManager.Instance.Player.condition.hp.Set(currentHP);
+                    break;
+                case StatType.Mana:
+                    maxMP += mod.value;
+                    currentMP = Mathf.Clamp(currentMP, 0, maxMP);
+                    CharacterManager.Instance.Player.condition.mp.maxValue = maxMP;
+                    CharacterManager.Instance.Player.condition.mp.Set(currentMP);
                     break;
                 case StatType.AttackPower:
                     currentAttackPower += mod.value;
@@ -112,6 +138,13 @@ public class PlayerStat : MonoBehaviour
                     currentHP = Mathf.Clamp(currentHP, 0, maxHP);
                     CharacterManager.Instance.Player.condition.hp.maxValue = maxHP;
                     CharacterManager.Instance.Player.condition.hp.Set(currentHP);
+                    break;
+                case StatType.Mana:
+                    maxMP -= mod.value;
+                    maxMP = Mathf.Max(1, maxMP);
+                    currentMP = Mathf.Clamp(currentMP, 0, maxMP);
+                    CharacterManager.Instance.Player.condition.mp.maxValue = maxMP;
+                    CharacterManager.Instance.Player.condition.mp.Set(currentMP);
                     break;
                 case StatType.AttackPower:
                     currentAttackPower -= mod.value;

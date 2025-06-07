@@ -19,7 +19,8 @@ public class Inventory : MonoBehaviour
     public TextMeshProUGUI itemDesc;
     public Button useButton;
     public Button equipButton;
-    public Button dropButton;
+    public Button unEquipButton;
+    public Button cancelButton;
 
     private ItemSlot selectedSlot;
 
@@ -38,14 +39,7 @@ public class Inventory : MonoBehaviour
 
     private void Start()
     {
-        //for (int i = 0; i < maxSlots; i++)
-        //{
-        //    GameObject go = Instantiate(slotPrefab, slotParent);
-        //    ItemSlot slot = go.GetComponent<ItemSlot>();
-        //    slot.index = i;
-        //    slots.Add(slot);
-        //    slot.Clear();
-        //}
+        slots = new List<ItemSlot>(slotParent.GetComponentsInChildren<ItemSlot>());
 
         ClearDetailPanel();
     }
@@ -85,9 +79,22 @@ public class Inventory : MonoBehaviour
         itemName.text = slot.itemData.displayName;
         itemDesc.text = slot.itemData.description;
 
-        useButton.gameObject.SetActive(slot.itemData.itemType == ItemType.Consumable);
-        equipButton.gameObject.SetActive(slot.itemData.itemType == ItemType.Equipable && !slot.isEquipped);
-        dropButton.gameObject.SetActive(true);
+        useButton.gameObject.SetActive(false);
+        equipButton.gameObject.SetActive(false);
+        unEquipButton.gameObject.SetActive(false);
+        cancelButton.gameObject.SetActive(true);
+
+        if (slot.itemData.itemType == ItemType.Consumable)
+        {
+            useButton.gameObject.SetActive(true); // 이게 핵심
+        }
+        else if (slot.itemData.itemType == ItemType.Equipable)
+        {
+            if (slot.isEquipped)
+                unEquipButton.gameObject.SetActive(true);
+            else
+                equipButton.gameObject.SetActive(true);
+        }
     }
 
     public void UseSelectedItem()
@@ -100,6 +107,9 @@ public class Inventory : MonoBehaviour
             {
                 case ConsumableType.Health:
                     PlayerStat.Instance.Heal((int)con.value);
+                    break;
+                case ConsumableType.Mana:
+                    PlayerStat.Instance.ManaHeal((int)con.value);
                     break;
                     // 다른 타입이 있다면 여기에 추가
             }
@@ -147,6 +157,88 @@ public class Inventory : MonoBehaviour
         itemDesc.text = "";
         useButton.gameObject.SetActive(false);
         equipButton.gameObject.SetActive(false);
-        dropButton.gameObject.SetActive(false);
+        cancelButton.gameObject.SetActive(false);
+    }
+
+    public void UseButton()
+    {
+        if (selectedSlot == null || selectedSlot.itemData == null)
+        {
+            Debug.LogWarning("[Inventory] 소비 아이템 사용 실패: 선택된 슬롯이 비어 있습니다.");
+            return;
+        }
+
+        if (selectedSlot.itemData.itemType != ItemType.Consumable)
+        {
+            Debug.LogWarning("[Inventory] 소비 아이템이 아닙니다.");
+            return;
+        }
+
+        // 소비형 효과 적용
+        foreach (var effect in selectedSlot.itemData.consumableEffects)
+        {
+            switch (effect.type)
+            {
+                case ConsumableType.Health:
+                    PlayerStat.Instance.Heal((int)effect.value);
+                    break;
+                case ConsumableType.Mana:
+                    PlayerStat.Instance.ManaHeal((int)effect.value);
+                    break;
+            }
+        }
+
+        RemoveSelectedItem();
+    }
+
+    public void EquipButton()
+    {
+        if (selectedSlot == null || selectedSlot.itemData == null) return;
+        if (selectedSlot.itemData.itemType != ItemType.Equipable || selectedSlot.isEquipped) return;
+
+        PlayerStat.Instance.ApplyModifiers(selectedSlot.itemData.statModifiers, selectedSlot.itemData.displayName);
+        selectedSlot.isEquipped = true;
+        selectedSlot.UpdateOutline();
+        UpdateButtonState();
+    }
+
+    public void UnEquipButton()
+    {
+        if (selectedSlot == null || selectedSlot.itemData == null) return;
+        if (!selectedSlot.isEquipped) return;
+
+        PlayerStat.Instance.RemoveModifiers(selectedSlot.itemData.statModifiers, selectedSlot.itemData.displayName);
+        selectedSlot.isEquipped = false;
+        selectedSlot.UpdateOutline();
+        UpdateButtonState();
+    }
+
+    public void CancelInventory()
+    {
+        inventoryPanel.SetActive(false);
+    }
+
+    private void UpdateButtonState()
+    {
+        if (selectedSlot == null || selectedSlot.itemData == null)
+        {
+            useButton.gameObject.SetActive(false);
+            equipButton.gameObject.SetActive(false);
+            unEquipButton.gameObject.SetActive(false);
+            return;
+        }
+
+        if (selectedSlot.itemData.itemType == ItemType.Consumable)
+        {
+            useButton.gameObject.SetActive(true);
+            equipButton.gameObject.SetActive(false);
+            unEquipButton.gameObject.SetActive(false);
+        }
+        else if (selectedSlot.itemData.itemType == ItemType.Equipable)
+        {
+            useButton.gameObject.SetActive(false);
+            equipButton.gameObject.SetActive(!selectedSlot.isEquipped);
+            unEquipButton.gameObject.SetActive(selectedSlot.isEquipped);
+        }
     }
 }
