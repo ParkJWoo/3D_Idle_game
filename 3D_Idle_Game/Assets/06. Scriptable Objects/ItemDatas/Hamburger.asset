@@ -18,5 +18,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 430c906575da5614b9dfb72ebf129a85, type: 3}
   canStack: 1
   maxStackAmount: 20
-  consumableEffects: []
+  consumableEffects:
+  - type: 1
+    value: 50
   statModifiers: []

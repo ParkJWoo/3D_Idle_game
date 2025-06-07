@@ -71,7 +71,6 @@ public class PlayerCondition : MonoBehaviour, IDamagable
     private void LevelUP()
     {
         level++;
-        Debug.Log($"레벨 업! 현재 레벨: {level}");
 
         exp.Set(0);
         onLevelUP?.Invoke();

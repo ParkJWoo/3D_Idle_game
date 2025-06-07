@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 public class Player : Character
 {
     public PlayerCondition condition;
-    //public ItemData itemDAta;
+    public ItemData itemData;
     public Action addItem;
 
     private void Awake()

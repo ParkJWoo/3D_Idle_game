@@ -8,20 +8,16 @@ public class ItemObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
-            bool added = Inventory.Instance.AddItem(itemData);
+            var player = CharacterManager.Instance?.Player;
+            if (player == null) return;
 
-            if(added)
-            {
-                Debug.Log($"{itemData.displayName} 아이템을 인벤토리에 추가했습니다.");
-                Destroy(gameObject);
-            }
+            player.itemData = itemData;
+            player.addItem?.Invoke();
 
-            else
-            {
-                Debug.LogWarning($"{itemData.displayName} 아이템 추가 실패 (인벤토리 공간 부족)");
-            }
+            Destroy(gameObject);
         }
+
     }
 }
