@@ -41,63 +41,68 @@ public class PlayerFSM : MonoBehaviour
         currentState = PlayerState.Idle;
         lastAttackTime = Time.time - attackDelay;
         lastSkillTime = Time.time - skillDelay;
-        StartCoroutine(StateLoop());
+
+        StartCoroutine(CheckState());
+        StartCoroutine(ActionState());
+
     }
 
-    private IEnumerator StateLoop()     // 상태 변경 메서드만 추가할 것 + 코루틴 1개를 추가(CheckState) / ActionState 메서드 
+    private IEnumerator CheckState()     // 상태 변경 메서드만 추가할 것 + 코루틴 1개를 추가(CheckState) / ActionState 메서드 
+    {
+        while(true)
+        {
+            FindClosestTarget();
+
+            if(currentTarget == null)
+            {
+                currentState = PlayerState.Idle;
+            }
+
+            else
+            {
+                float distance = Vector3.Distance(transform.position, currentTarget.position);
+
+                if(distance > attackRange + agent.stoppingDistance)
+                {
+                    currentState = PlayerState.Move;
+                }
+
+                else
+                {
+                    currentState = PlayerState.Attack;
+                }
+            }
+
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    private IEnumerator ActionState()
     {
         while(true)
         {
             switch(currentState)
             {
                 case PlayerState.Idle:
+
                     animator.SetFloat("MoveSpeed", 0f);
                     animator.SetBool("IsMoving", false);
-                    FindClosestTarget();
-                    if(currentTarget!= null)
-                    {
-                        currentState = PlayerState.Move;
-                    }
                     break;
 
                 case PlayerState.Move:
-                    if(currentTarget == null)
-                    {
-                        currentState = PlayerState.Idle;
-                        animator.SetFloat("MoveSpeed", 0f);
-                        break;
-                    }
 
-                    agent.SetDestination(currentTarget.position);
-                    animator.SetBool("IsMoving", true);
-                    animator.SetFloat("MoveSpeed", agent.velocity.magnitude);
-
-                    if(!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+                    if(currentTarget != null)
                     {
-                        agent.ResetPath();
-                        animator.SetFloat("MoveSpeed", 0f);
-                        animator.SetBool("IsMoving", false);
-                        currentState = PlayerState.Attack;
+                        agent.SetDestination(currentTarget.position);
+                        animator.SetBool("IsMoving", true);
+                        animator.SetFloat("MoveSpeed", agent.velocity.magnitude);
                     }
                     break;
 
                 case PlayerState.Attack:
-                    //if(currentTarget == null)
-                    //{
-                    //    currentState = PlayerState.Idle;
-                    //    break;
-                    //}
-
-                    //float distance = Vector3.Distance(transform.position, currentTarget.position);
-
-                    //if(distance > attackRange + agent.stoppingDistance)
-                    //{
-                    //    currentState = PlayerState.Move;
-                    //    break;
-                    //}
-
-                    //transform.LookAt(currentTarget);
-                    //animator.SetBool("IsMoving", false);
+                    agent.ResetPath();
+                    animator.SetBool("IsMoving", false);
+                    transform.LookAt(currentTarget);
 
                     if(Time.time - lastAttackTime >= attackDelay)
                     {
@@ -110,7 +115,6 @@ public class PlayerFSM : MonoBehaviour
                     {
                         currentState = PlayerState.Skill;
                     }
-
                     break;
 
                 case PlayerState.Skill:
