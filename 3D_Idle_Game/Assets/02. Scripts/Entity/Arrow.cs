@@ -55,11 +55,6 @@ public class Arrow : MonoBehaviour
 
             ReleasePool();
         }
-
-        //else if(other.CompareTag("Wall") || other.CompareTag("Ground"))
-        //{
-        //    ReleasePool();
-        //}
     }
 
     private void ReleasePool()
@@ -83,5 +78,4 @@ public class Arrow : MonoBehaviour
             arrowScript.Fire(direction, speed);
         }
     }
-   
 }
