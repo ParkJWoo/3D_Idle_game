@@ -15,7 +15,7 @@ public class PlayerFSM : MonoBehaviour
 {
     private PlayerState currentState;
 
-    public float attackRange = 2f;
+    public float attackRange = 1.5f;
     public float attackDelay = 1f;
     public float skillDelay = 5f;
     public float skillManaCost = 10f;
