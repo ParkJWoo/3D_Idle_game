@@ -15,7 +15,7 @@ public class Enemy : Character
 
     public override void Die()
     {
-        DropRandomItems();
+        //DropRandomItems();
         
         base.Die();
 
