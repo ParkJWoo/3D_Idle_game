@@ -8,8 +8,6 @@ public class ItemObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Ãæµ¹ °¨ÁöµÊ: " + other.name);
-
         if (!other.CompareTag("Player")) return;
 
         if (itemData == null)
@@ -31,6 +29,5 @@ public class ItemObject : MonoBehaviour
             Debug.Log($"{itemData.displayName} ¾ÆÀÌÅÛ È¹µæ ¼º°ø!");
             Destroy(gameObject);
         }
-
     }
 }
