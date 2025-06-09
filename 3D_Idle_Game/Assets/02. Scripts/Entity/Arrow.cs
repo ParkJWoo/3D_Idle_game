@@ -36,10 +36,20 @@ public class Arrow : MonoBehaviour
         {
             Character target = other.GetComponent<Character>();
             EnemyFSM enemyFSM = other.GetComponent<EnemyFSM>();
+            ArcherEnemyFSM archerEnemyFSM = other.GetComponent<ArcherEnemyFSM>();
 
             if(target != null)
             {
                 target.TakeDamage((int)damage);
+            }
+
+            else
+            {
+                Debug.LogWarning("[Arrow] Enemy에 Character 컴포넌트가 없습니다.");
+            }
+
+            if(enemyFSM != null)
+            {
                 enemyFSM.DamageAndChase();
             }
 
