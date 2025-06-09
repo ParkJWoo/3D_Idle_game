@@ -35,10 +35,12 @@ public class Arrow : MonoBehaviour
         if(other.CompareTag("Enemy"))
         {
             Character target = other.GetComponent<Character>();
+            EnemyFSM enemyFSM = other.GetComponent<EnemyFSM>();
 
             if(target != null)
             {
                 target.TakeDamage((int)damage);
+                enemyFSM.DamageAndChase();
             }
 
             ReleasePool();
