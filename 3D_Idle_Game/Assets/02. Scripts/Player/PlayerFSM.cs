@@ -44,7 +44,7 @@ public class PlayerFSM : MonoBehaviour
         StartCoroutine(StateLoop());
     }
 
-    private IEnumerator StateLoop()
+    private IEnumerator StateLoop()     // 상태 변경 메서드만 추가할 것 + 코루틴 1개를 추가(CheckState) / ActionState 메서드 
     {
         while(true)
         {
@@ -82,22 +82,22 @@ public class PlayerFSM : MonoBehaviour
                     break;
 
                 case PlayerState.Attack:
-                    if(currentTarget == null)
-                    {
-                        currentState = PlayerState.Idle;
-                        break;
-                    }
+                    //if(currentTarget == null)
+                    //{
+                    //    currentState = PlayerState.Idle;
+                    //    break;
+                    //}
 
-                    float distance = Vector3.Distance(transform.position, currentTarget.position);
+                    //float distance = Vector3.Distance(transform.position, currentTarget.position);
 
-                    if(distance > attackRange + agent.stoppingDistance)
-                    {
-                        currentState = PlayerState.Move;
-                        break;
-                    }
+                    //if(distance > attackRange + agent.stoppingDistance)
+                    //{
+                    //    currentState = PlayerState.Move;
+                    //    break;
+                    //}
 
-                    transform.LookAt(currentTarget);
-                    animator.SetBool("IsMoving", false);
+                    //transform.LookAt(currentTarget);
+                    //animator.SetBool("IsMoving", false);
 
                     if(Time.time - lastAttackTime >= attackDelay)
                     {
