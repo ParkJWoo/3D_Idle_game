@@ -46,10 +46,10 @@ public class Arrow : MonoBehaviour
             ReleasePool();
         }
 
-        else if(other.CompareTag("Wall") || other.CompareTag("Ground"))
-        {
-            ReleasePool();
-        }
+        //else if(other.CompareTag("Wall") || other.CompareTag("Ground"))
+        //{
+        //    ReleasePool();
+        //}
     }
 
     private void ReleasePool()
@@ -73,10 +73,5 @@ public class Arrow : MonoBehaviour
             arrowScript.Fire(direction, speed);
         }
     }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + transform.forward * 2f);
-    }
+   
 }
