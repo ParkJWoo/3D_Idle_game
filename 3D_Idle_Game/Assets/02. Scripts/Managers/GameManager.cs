@@ -27,10 +27,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void AddGold(int amount)
-    {
-        Gold += amount;
-    }
 
     public void AddExp(int amount)
     {
@@ -46,7 +42,6 @@ public class GameManager : MonoBehaviour
     {
         Level++;
         Exp -= ExpToLevelUP;
-        Debug.Log("·¹º§ ¾÷");
     }
 
     public void SetStage(int stage)

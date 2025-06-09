@@ -45,6 +45,23 @@ public class CharacterManager : MonoBehaviour
         }
     }
 
+    public int GetGold()
+    {
+        return gold;
+    }
+
+    public bool SpendGold(int amount)
+    {
+        if(gold >= amount)
+        {
+            gold -= amount;
+            UIManager.Instance?.UpdateGoldText(gold);
+            return true;
+        }
+
+        return false;
+    }
+
     public void AddGold(int amount)
     {
         gold += amount;
