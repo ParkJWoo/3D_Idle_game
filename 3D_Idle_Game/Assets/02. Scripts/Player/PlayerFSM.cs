@@ -48,6 +48,7 @@ public class PlayerFSM : MonoBehaviour
         StartCoroutine(ActionState());
     }
 
+    //  상태를 체크하는 메서드
     private IEnumerator CheckState()
     {
         var wait = new WaitForSeconds(0.1f);
@@ -72,6 +73,7 @@ public class PlayerFSM : MonoBehaviour
         }
     }
 
+    //  상태 전환을 실행하는 메서드
     private IEnumerator ActionState()
     {
         while (true)
@@ -101,6 +103,7 @@ public class PlayerFSM : MonoBehaviour
         }
     }
 
+    //  Idle 상태 관리 메서드
     private void HandleIdle()
     {
         animator.SetBool("IsMoving", false);
@@ -108,6 +111,7 @@ public class PlayerFSM : MonoBehaviour
         agent.ResetPath();
     }
 
+    //  Move 상태 관리 메서드
     private void HandleMove()
     {
         if (currentTarget == null)
@@ -115,11 +119,12 @@ public class PlayerFSM : MonoBehaviour
             return;
         }
 
-        agent.SetDestination(currentTarget.position);
+        agent.SetDestination(currentTarget.position);           //  가까이 있는 적을 추적
         animator.SetBool("IsMoving", true);
         animator.SetFloat("MoveSpeed", agent.velocity.magnitude);
     }
 
+    //  Attack 상태 관리 메서드
     private void HandleAttack()
     {
         if (currentTarget == null)
@@ -127,29 +132,31 @@ public class PlayerFSM : MonoBehaviour
             return;
         }
 
-        agent.ResetPath();
+        agent.ResetPath();                                      //  적 추적 정지
         animator.SetBool("IsMoving", false);
-        transform.LookAt(currentTarget);
+        transform.LookAt(currentTarget);                        //  적을 향해 바라보면서
 
-        if (Time.time - lastAttackTime >= attackDelay)
+        if (Time.time - lastAttackTime >= attackDelay)          //  공격 시행
         {
             lastAttackTime = Time.time;
             animator.SetTrigger("Attack");
             StartCoroutine(DelayFire());
         }
 
-        if (Time.time - lastSkillTime >= skillDelay && mpCondition.curValue >= skillManaCost)
+        if (Time.time - lastSkillTime >= skillDelay && mpCondition.curValue >= skillManaCost)       //  스킬의 경우, 마나가 부족하지 않은 한 일정 시간에 한 번 시행하도록 구현했습니다.
         {
             currentState = PlayerState.Skill;
         }
     }
 
+    //  공격 후 즉시 발사하지 않고 일정 딜레이 후 다시 발사하도록 하는 메서드
     private IEnumerator DelayFire()
     {
         yield return new WaitForSeconds(0.3f);
         FireArrow();
     }
 
+    //  가장 가까이 있는 적을 탐색하는 메서드
     private void FindClosestTarget()
     {
         var enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -163,6 +170,7 @@ public class PlayerFSM : MonoBehaviour
         currentTarget = enemies.Where(e => e.activeInHierarchy).OrderBy(e => Vector3.Distance(transform.position, e.transform.position)).FirstOrDefault()?.transform;
     }
 
+    //  화살 발사 메서드
     private void FireArrow()
     {
         if(currentTarget == null || firePoint == null)
@@ -174,6 +182,7 @@ public class PlayerFSM : MonoBehaviour
         Arrow.SpawnAndFire(firePoint.position, Quaternion.LookRotation(direction), direction, 20f);
     }
 
+    //  스킬 사용 메서드
     private void UseSkill()
     {
         if (mpCondition.curValue < skillManaCost)
@@ -185,7 +194,7 @@ public class PlayerFSM : MonoBehaviour
 
         for (int i = -2; i <= 2; i++)
         {
-            GameObject arrow = Instantiate(skillProjectilePrefab, firePoint.position, Quaternion.identity);
+            GameObject arrow = Instantiate(skillProjectilePrefab, firePoint.position, Quaternion.identity); //  화살 여러 발을 부채꼴 형식으로 발사하는 스킬
             arrow.transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y + i * 10f, 0f);
             arrow.GetComponent<Rigidbody>().velocity = arrow.transform.forward * 15f;
         }

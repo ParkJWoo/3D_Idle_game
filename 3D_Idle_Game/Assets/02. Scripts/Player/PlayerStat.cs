@@ -55,34 +55,27 @@ public class PlayerStat : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int amount)
-    {
-        CurrentHP = Mathf.Clamp(CurrentHP - amount, 0, MaxHP);
-        CharacterManager.Instance?.Player?.condition.hp.Set(CurrentHP);
-
-        if(CurrentHP <= 0)
-        {
-            CharacterManager.Instance?.Player?.Die();
-        }
-    }
-
+    //  사과 아이템을 먹을 시 HP 회복 메서드
     public void Heal(int amount)
     {
         CurrentHP = Mathf.Clamp(CurrentHP + amount, 0, MaxHP);
         CharacterManager.Instance?.Player?.condition.hp.Set(CurrentHP);
     }
 
+    //  바나나 아이템을 먹을 시 MP 회복 메서드
     public void ManaHeal(int amount)
     {
         CurrentMP = Mathf.Clamp(CurrentMP + amount, 0, MaxMP);
         CharacterManager.Instance?.Player?.condition.mp.Set(CurrentMP);
     }
 
+    //  햄버거 아이템을 먹을 시 일정 시간동안 공격력 상승 버프를 적용하는 메서드
     public void TemporaryAttackPowerBuff(int amount, float duration)
     {
         StartCoroutine(ApplyAttackPowerBuffCoroutine(amount, duration));
     }
 
+    //  버프 적용 메서드 → 일정 시간동안에만 작동하도록 구현했습니다.
     private IEnumerator ApplyAttackPowerBuffCoroutine(int amount, float duration)
     {
         CurrentAttackPower += amount;

@@ -8,6 +8,7 @@ public class AttackHitBox : MonoBehaviour
     {
         var player = other.GetComponentInParent<Player>();
 
+        //  플레이어가 맞았을 때, 데미지 차감
         if(player != null)
         {
             player.TakeDamage(10);

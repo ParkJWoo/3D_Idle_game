@@ -24,18 +24,21 @@ public class Shop : MonoBehaviour
         shopPanel.SetActive(false);
     }
 
+    //  [상점] 버튼 이벤트 메서드
     public void OpenShop()
     {
         shopPanel.SetActive(true);
         SetupShop();
     }
 
+    //  [닫기] 버튼 이벤트 메서드
     public void CloseShop()
     {
         shopPanel.SetActive(false);
         ClearSelection();
     }
 
+    //  상점 내 슬롯 초기화 메서드
     private void SetupShop()
     {
         //  슬롯 초기화
@@ -56,6 +59,7 @@ public class Shop : MonoBehaviour
         }
     }
 
+    //  상점 UI 내 슬롯들 중 하나를 선택했을 때, 하단 정보 UI에 해당 아이템의 정보를 띄우기 위한 메서드
     public void SelectItem(ShopItemSlot slot)
     {
         selectSlot = slot;
@@ -78,6 +82,7 @@ public class Shop : MonoBehaviour
         purchaseButton.interactable = true;
     }
 
+    //  [구매] 버튼 이벤트 메서드
     public void PurchaseItem()
     {
         if(selectSlot == null)
@@ -100,6 +105,7 @@ public class Shop : MonoBehaviour
         ClearSelection();
     }
 
+    //  상점 슬롯 초기화 메서드
     private void ClearSelection()
     {
         selectSlot = null;

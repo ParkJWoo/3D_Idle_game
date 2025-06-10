@@ -14,6 +14,7 @@ public class ItemSlot : MonoBehaviour
     public TextMeshProUGUI quantityText;
     public Outline outline;
 
+    //  아이템 세팅 메서드
     public void SetItem(ItemData data, int amount = 1)
     {
         itemData = data;
@@ -23,6 +24,7 @@ public class ItemSlot : MonoBehaviour
         UpdateSlotUI();
     }
 
+    //  슬롯의 변경되는 것들을 갱신해주는 메서드
     public void UpdateSlotUI()
     {
         icon.enabled = (itemData != null);
@@ -30,12 +32,14 @@ public class ItemSlot : MonoBehaviour
         UpdateOutline();
     }
 
+    //  슬롯 테두리 갱신 메서드
     public void UpdateOutline()
     {
         if (outline != null)
             outline.enabled = isEquipped;
     }
 
+    //  초기화 메서드
     public void Clear()
     {
         itemData = null;
@@ -46,6 +50,7 @@ public class ItemSlot : MonoBehaviour
         UpdateOutline();
     }
 
+    //  슬롯 선택 시 인벤토리에 해당 슬롯이 선택되었음을 알리는 메서드
     public void OnClick()
     {
         Inventory.Instance.SelectSlot(this);

@@ -50,17 +50,20 @@ public class Arrow : MonoBehaviour
         }
     }
 
+    //  화살도 마찬가지로 오브젝트 풀링 방식을 활용하였기에 지정한 화살 풀로 되돌리는 메서드
     private void ReleasePool()
     {
         ObjectPool.Instance.ReturnToPool("Arrow", this.gameObject);
     }
 
+    //  발사 시, 적을 향해 날아가도록 해주는 메서드
     public void Fire(Vector3 direction, float speed)
     {
         transform.rotation = Quaternion.LookRotation(direction);
         rigidbody.velocity = direction.normalized * speed;
     }
 
+    //  화살을 생성하고 발사하는 메서드
     public static void SpawnAndFire(Vector3 position, Quaternion rotation, Vector3  direction, float speed)
     {
         GameObject arrow = ObjectPool.Instance.SpawnFromPool("Arrow", position, rotation);

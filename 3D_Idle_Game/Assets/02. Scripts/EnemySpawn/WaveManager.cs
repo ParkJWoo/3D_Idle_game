@@ -17,6 +17,7 @@ public class WaveManager : MonoBehaviour
         StartCoroutine(StartWave());
     }
 
+    //  웨이브 시작 메서드
     private IEnumerator StartWave()
     {
         currentAliveEnemies = 0;
@@ -50,6 +51,7 @@ public class WaveManager : MonoBehaviour
                 enemyComp.waveManager = this;
             }
 
+            //  웨이브 내 적들의 수를 지정한 수만큼 올려줌 → 10마리의 적을 세팅했다면, 10마리의 적이 웨이브에 나오게금 하기 위함.
             currentAliveEnemies++;
 
             yield return new WaitForSeconds(0.1f);
@@ -57,6 +59,7 @@ public class WaveManager : MonoBehaviour
 
     }
 
+    //  지정한 스폰 포인트에 적들을 스폰해주는 메서드
     private Vector3 GetSpawnPosition(int index)
     {
         if(spawnPoints == null || spawnPoints.Length == 0)
@@ -67,6 +70,7 @@ public class WaveManager : MonoBehaviour
         return spawnPoints[index % spawnPoints.Length].position;
     }
 
+    //  적들이 죽었을 때, 웨이브 내 설정한 적들의 수를 차감 → 웨이브 내 적의 수가 0 이하일 경우 RespawnAfterDelay 실행
     public void OnEnemyDied()
     {
         currentAliveEnemies--;
@@ -77,6 +81,7 @@ public class WaveManager : MonoBehaviour
         }
     }
 
+    //  적들을 리스폰해주는 메서드
     private IEnumerator RespawnAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);

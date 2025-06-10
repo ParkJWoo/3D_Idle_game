@@ -14,14 +14,7 @@ public class TextUIs : MonoBehaviour
     {
     }
 
-    public void SetStage(int stageNum)
-    {
-        if(stageText != null)
-        {
-            stageText.text = $"Stage {stageNum}";
-        }
-    }
-
+    //  골드 UI 정보 갱신 메서드
     public void SetGold(int gold)
     {
         if (goldText != null)
@@ -30,6 +23,7 @@ public class TextUIs : MonoBehaviour
         }
     }
 
+    //  레벨 UI 정보 갱신 메서드
     public void SetLevel(int level)
     {
         if(levelText != null)

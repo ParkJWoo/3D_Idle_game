@@ -14,6 +14,7 @@ public class ShopItemSlot : MonoBehaviour
 
     private Shop shop;
 
+    //  슬롯 초기화 메서드
     public void Initialize(ItemData data, int itemPrice, Shop shopRef)
     {
         itemData = data;

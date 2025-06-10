@@ -34,6 +34,7 @@ public class ObjectPool : MonoBehaviour
         }
     }
 
+    //  Pool 초기화 메서드
     private void InitializePools()
     {
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
@@ -53,6 +54,7 @@ public class ObjectPool : MonoBehaviour
         }
     }
 
+    //  풀 내 설정한 적들을 스폰하는 메서드
     public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
     {
         if(!poolDictionary.ContainsKey(tag))
@@ -78,6 +80,7 @@ public class ObjectPool : MonoBehaviour
         return obj;
     }
 
+    //  웨이브 내 적들이 죽었을 때, Destroy하지 않고 풀로 되돌린 후, 비활성화 처리해주는 메서드
     public void ReturnToPool(string tag, GameObject obj)
     {
         if(!poolDictionary.ContainsKey(tag))

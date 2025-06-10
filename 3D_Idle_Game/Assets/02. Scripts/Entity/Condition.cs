@@ -35,6 +35,7 @@ public class Condition : MonoBehaviour
         UpdateUI();
     }
 
+    //  변하는 UI의 상태들을 갱신하는 메서드
     private void UpdateUI()
     {
         if(uiBar != null)
@@ -48,18 +49,21 @@ public class Condition : MonoBehaviour
         return (float)curValue / maxValue;
     }
 
+    //  체력, 마나, 경험치 등의 수치를 올려주는 메서드
     public void Add(int value)
     {
         curValue = Mathf.Min(curValue + value, maxValue);
         UpdateUI();
     }
 
+    //  체력, 마나, 경험치 등의 수치를 깎는 메서드
     public void Subtract(int value)
     {
         curValue = Mathf.Max(curValue - value, 0);
         UpdateUI();
     }
 
+    //  체력, 마나, 경험치들의 수치를 조정하는 메서드
     public void Set(int value)
     {
         curValue = Mathf.Clamp(value, 0, maxValue);

@@ -10,9 +10,6 @@ public class Enemy : Character
     public int rewardGold = 100;
     public int rewardExp = 10;
 
-    [Header("Drop Settings")]
-    [SerializeField] private List<GameObject> dropPrefabs;  // 드랍 가능한 아이템 프리팹 목록
-
     public WaveManager waveManager;
 
     public override void Die()
@@ -26,6 +23,7 @@ public class Enemy : Character
         StartCoroutine(ReleaseToPoolAfterDelay(1.5f));
     }
 
+    //  WaveManager에게 적이 죽었음을 알려주는 메서드 → WaveManager에서 웨이브 내 적이 죽었다는 것을 확인한 후 리스폰하게 하기 위함
     private IEnumerator ReleaseToPoolAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);

@@ -33,6 +33,7 @@ public abstract class Character : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
+    //  데미지 계산 메서드
     public virtual void TakeDamage(int amount)
     {
         currentHP -= amount;
@@ -49,6 +50,7 @@ public abstract class Character : MonoBehaviour
         }
     }
 
+    //  사망 처리 메서드
     public virtual void Die()
     {
         if(isDead)
@@ -64,6 +66,7 @@ public abstract class Character : MonoBehaviour
         }
     }
 
+    //  캐릭터를 초기화하는 메서드 → 적들의 경우, 죽은 후 리스폰 시 0 이하로 되어있는 적들의 체력 등을 초기화하여 동작하도록 하기 위한 메서드입니다.
     public virtual void ResetCharacter()
     {
         if(characterData != null)
