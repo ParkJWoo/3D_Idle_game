@@ -13,47 +13,50 @@ public enum PlayerState
 
 public class PlayerFSM : MonoBehaviour
 {
-    private PlayerState currentState;
-
+    [Header("Player Settings")]
     public float attackRange = 1.5f;
     public float attackDelay = 1f;
     public float skillDelay = 5f;
     public float skillManaCost = 10f;
 
-    private float lastAttackTime;
-    private float lastSkillTime;
-
-    private NavMeshAgent agent;
-    private Animator animator;
-
-    public Transform currentTarget;
-    public Condition hpCondition;
-    public Condition mpCondition;
-
+    [Header("Referances")]
     public GameObject arrowPrefab;
     public GameObject skillProjectilePrefab;
     public Transform firePoint;
+    public Condition hpCondition;
+    public Condition mpCondition;
+
+    private NavMeshAgent agent;
+    private Animator animator;
+    private Transform currentTarget;
+
+    private float lastAttackTime;
+    private float lastSkillTime;
+
+    private PlayerState currentState;
 
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        currentState = PlayerState.Idle;
+
         lastAttackTime = Time.time - attackDelay;
         lastSkillTime = Time.time - skillDelay;
+        currentState = PlayerState.Idle;
 
         StartCoroutine(CheckState());
         StartCoroutine(ActionState());
-
     }
 
-    private IEnumerator CheckState()     // 상태 변경 메서드만 추가할 것 + 코루틴 1개를 추가(CheckState) / ActionState 메서드 
+    private IEnumerator CheckState()
     {
-        while(true)
+        var wait = new WaitForSeconds(0.1f);
+
+        while (true)
         {
             FindClosestTarget();
 
-            if(currentTarget == null)
+            if (currentTarget == null)
             {
                 currentState = PlayerState.Idle;
             }
@@ -62,59 +65,29 @@ public class PlayerFSM : MonoBehaviour
             {
                 float distance = Vector3.Distance(transform.position, currentTarget.position);
 
-                if(distance > attackRange + agent.stoppingDistance)
-                {
-                    currentState = PlayerState.Move;
-                }
-
-                else
-                {
-                    currentState = PlayerState.Attack;
-                }
+                currentState = distance > attackRange + agent.stoppingDistance ? PlayerState.Move : PlayerState.Attack;
             }
 
-            yield return new WaitForSeconds(0.1f);
+            yield return wait;
         }
     }
 
     private IEnumerator ActionState()
     {
-        while(true)
+        while (true)
         {
-            switch(currentState)
+            switch (currentState)
             {
                 case PlayerState.Idle:
-
-                    animator.SetFloat("MoveSpeed", 0f);
-                    animator.SetBool("IsMoving", false);
+                    HandleIdle();
                     break;
 
                 case PlayerState.Move:
-
-                    if(currentTarget != null)
-                    {
-                        agent.SetDestination(currentTarget.position);
-                        animator.SetBool("IsMoving", true);
-                        animator.SetFloat("MoveSpeed", agent.velocity.magnitude);
-                    }
+                    HandleMove();
                     break;
 
                 case PlayerState.Attack:
-                    agent.ResetPath();
-                    animator.SetBool("IsMoving", false);
-                    transform.LookAt(currentTarget);
-
-                    if(Time.time - lastAttackTime >= attackDelay)
-                    {
-                        animator.SetTrigger("Attack");
-                        StartCoroutine(DelayFire());
-                        lastAttackTime = Time.time;
-                    }
-
-                    if(Time.time - lastSkillTime >= skillDelay && mpCondition.curValue >= skillManaCost)
-                    {
-                        currentState = PlayerState.Skill;
-                    }
+                    HandleAttack();
                     break;
 
                 case PlayerState.Skill:
@@ -128,16 +101,58 @@ public class PlayerFSM : MonoBehaviour
         }
     }
 
+    private void HandleIdle()
+    {
+        animator.SetBool("IsMoving", false);
+        animator.SetFloat("MoveSpeed", 0f);
+        agent.ResetPath();
+    }
+
+    private void HandleMove()
+    {
+        if (currentTarget == null)
+        {
+            return;
+        }
+
+        agent.SetDestination(currentTarget.position);
+        animator.SetBool("IsMoving", true);
+        animator.SetFloat("MoveSpeed", agent.velocity.magnitude);
+    }
+
+    private void HandleAttack()
+    {
+        if (currentTarget == null)
+        {
+            return;
+        }
+
+        agent.ResetPath();
+        animator.SetBool("IsMoving", false);
+        transform.LookAt(currentTarget);
+
+        if (Time.time - lastAttackTime >= attackDelay)
+        {
+            lastAttackTime = Time.time;
+            animator.SetTrigger("Attack");
+            StartCoroutine(DelayFire());
+        }
+
+        if (Time.time - lastSkillTime >= skillDelay && mpCondition.curValue >= skillManaCost)
+        {
+            currentState = PlayerState.Skill;
+        }
+    }
+
     private IEnumerator DelayFire()
     {
         yield return new WaitForSeconds(0.3f);
-        Attack();
+        FireArrow();
     }
 
     private void FindClosestTarget()
     {
         var enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        //Debug.Log($"타겟 탐색: 발견한 적 수 : {enemies.Length}");
 
         if(enemies.Length == 0)
         {
@@ -145,44 +160,39 @@ public class PlayerFSM : MonoBehaviour
             return;
         }
 
-        currentTarget = enemies.OrderBy(e => Vector3.Distance(transform.position, e.transform.position)).First().transform;
+        currentTarget = enemies.Where(e => e.activeInHierarchy).OrderBy(e => Vector3.Distance(transform.position, e.transform.position)).FirstOrDefault()?.transform;
     }
 
-    private void Attack()
+    private void FireArrow()
     {
-        if(currentTarget != null)
+        if(currentTarget == null || firePoint == null)
         {
-            Vector3 direction = (currentTarget.position - firePoint.position).normalized;
-
-            Arrow.SpawnAndFire(firePoint.position, Quaternion.LookRotation(direction), direction, 20f);
+            return;
         }
 
+        Vector3 direction = (currentTarget.position - firePoint.position).normalized;
+        Arrow.SpawnAndFire(firePoint.position, Quaternion.LookRotation(direction), direction, 20f);
     }
 
     private void UseSkill()
     {
-        if(mpCondition.curValue < skillManaCost)
+        if (mpCondition.curValue < skillManaCost)
         {
             return;
         }
 
         mpCondition.Subtract((int)skillManaCost);
 
-        for(int i = -2; i <= 2; i++)
+        for (int i = -2; i <= 2; i++)
         {
             GameObject arrow = Instantiate(skillProjectilePrefab, firePoint.position, Quaternion.identity);
-            arrow.transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y + i * 10, 0);
+            arrow.transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y + i * 10f, 0f);
             arrow.GetComponent<Rigidbody>().velocity = arrow.transform.forward * 15f;
         }
     }
 
-    public bool IsDead()
-    {
-        return hpCondition.curValue <= 0;
-    }
+    public bool IsDead() => hpCondition.curValue <= 0;
 
-    //  불필요하지만 에러 방지용 코드
-    public void FireProjectile()
-    {
-    }
+    //  애니메이션 이벤트용 (쓰지 않음)
+    public void FireProjectile() { }
 }

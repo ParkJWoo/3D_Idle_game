@@ -1,29 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 
 public class PlayerStat : MonoBehaviour
 {
-    public static PlayerStat Instance;
+    public static PlayerStat Instance { get; private set; }
 
-    [Header("Base HP Stats")]
+    [Header("Base Stats")]
     public int baseHP = 100;
-    public int currentHP;
-    public int maxHP;
-
-    [Header("Base MP Stats")]
     public int baseMP = 100;
-    public int currentMP;
-    public int maxMP;
-
-    [Header("Base Attack Power Stats")]
     public int baseAttackPower = 10;
-    public int currentAttackPower;
 
-    [Header("Equipped Item Display")]
-    public TextMeshProUGUI equippedItemListText;
-    private List<string> equippedItemNames = new List<string>();
+    public int MaxHP { get; private set; }
+    public int CurrentHP { get; private set; }
+
+    public int MaxMP { get; private set; }
+    public int CurrentMP { get; private set; }
+
+    public int CurrentAttackPower { get; private set; }
 
     private void Awake()
     {
@@ -41,48 +37,45 @@ public class PlayerStat : MonoBehaviour
 
     private void Start()
     {
-        maxHP = baseHP;
-        currentHP = maxHP;
-        currentAttackPower = baseAttackPower;
-        currentMP = maxMP;
+        MaxHP = baseHP;
+        MaxMP = baseMP;
+        CurrentHP = MaxHP;
+        CurrentMP = MaxMP;
+        CurrentAttackPower = baseAttackPower;
 
-        CharacterManager.Instance.Player.condition.hp.maxValue = maxHP;
-        CharacterManager.Instance.Player.condition.hp.Set(currentHP);
-        CharacterManager.Instance.Player.condition.mp.maxValue = maxMP;
-        CharacterManager.Instance.Player.condition.mp.Set(currentMP);
+        var player = CharacterManager.Instance?.Player;
+
+        if(player?.condition != null)
+        {
+            player.condition.hp.maxValue = MaxHP;
+            player.condition.hp.Set(CurrentHP);
+
+            player.condition.mp.maxValue = MaxMP;
+            player.condition.mp.Set(CurrentMP);
+        }
     }
 
     public void TakeDamage(int amount)
     {
-        currentHP -= amount;
-        currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+        CurrentHP = Mathf.Clamp(CurrentHP - amount, 0, MaxHP);
+        CharacterManager.Instance?.Player?.condition.hp.Set(CurrentHP);
 
-        CharacterManager.Instance.Player.condition.hp.Set(currentHP);
-
-        if(currentHP <= 0)
+        if(CurrentHP <= 0)
         {
-            CharacterManager.Instance.Player.Die();
+            CharacterManager.Instance?.Player?.Die();
         }
     }
 
-    //  아이템에 장착 시 해당 아이템의 스탯 추가 적용
     public void Heal(int amount)
     {
-        currentHP += amount;
-        currentHP = Mathf.Clamp(currentHP, 0, maxHP);
-
-        if (CharacterManager.Instance.Player != null && CharacterManager.Instance.Player.condition != null)
-        {
-            CharacterManager.Instance.Player.condition.hp.Set(currentHP);
-        }
+        CurrentHP = Mathf.Clamp(CurrentHP + amount, 0, MaxHP);
+        CharacterManager.Instance?.Player?.condition.hp.Set(CurrentHP);
     }
 
     public void ManaHeal(int amount)
     {
-        if (CharacterManager.Instance.Player != null && CharacterManager.Instance.Player.condition != null)
-        {
-            CharacterManager.Instance.Player.condition.mp.Add(amount); // ← 반드시 Add()
-        }
+        CurrentMP = Mathf.Clamp(CurrentMP + amount, 0, MaxMP);
+        CharacterManager.Instance?.Player?.condition.mp.Set(CurrentMP);
     }
 
     public void TemporaryAttackPowerBuff(int amount, float duration)
@@ -92,101 +85,8 @@ public class PlayerStat : MonoBehaviour
 
     private IEnumerator ApplyAttackPowerBuffCoroutine(int amount, float duration)
     {
-        currentAttackPower += amount;
-        Debug.Log($"[버프] 공격력 +{amount}, 지속 시간: {duration}초");
-
+        CurrentAttackPower += amount;
         yield return new WaitForSeconds(duration);
-
-        currentAttackPower -= amount;
-        currentAttackPower = Mathf.Max(0, currentAttackPower);
-        Debug.Log($"[버프 종료] 공격력 원상복귀");
-    }
-
-    public void ApplyModifiers(StatModifier[] modifiers)
-    {
-        ApplyModifiers(modifiers, "");
-    }
-
-    public void ApplyModifiers(StatModifier[] modifiers, string itemName)
-    {
-        foreach (var mod in modifiers)
-        {
-            switch (mod.type)
-            {
-                case StatType.Health:
-                    maxHP += mod.value;
-                    currentHP = Mathf.Clamp(currentHP, 0, maxHP);
-                    CharacterManager.Instance.Player.condition.hp.maxValue = maxHP;
-                    CharacterManager.Instance.Player.condition.hp.Set(currentHP);
-                    break;
-                case StatType.Mana:
-                    maxMP += mod.value;
-                    currentMP = Mathf.Clamp(currentMP, 0, maxMP);
-                    CharacterManager.Instance.Player.condition.mp.maxValue = maxMP;
-                    CharacterManager.Instance.Player.condition.mp.Set(currentMP);
-                    break;
-                case StatType.AttackPower:
-                    currentAttackPower += mod.value;
-                    break;
-            }
-        }
-
-        if (!string.IsNullOrEmpty(itemName))
-        {
-            equippedItemNames.Add(itemName);
-            UpdateEquippedItemText();
-        }
-    }
-
-    public void RemoveModifiers(StatModifier[] modifiers)
-    {
-        RemoveModifiers(modifiers, "");
-    }
-
-    public void RemoveModifiers(StatModifier[] modifiers, string itemName)
-    {
-        foreach (var mod in modifiers)
-        {
-            switch (mod.type)
-            {
-                case StatType.Health:
-                    maxHP -= mod.value;
-                    maxHP = Mathf.Max(1, maxHP);
-                    currentHP = Mathf.Clamp(currentHP, 0, maxHP);
-                    CharacterManager.Instance.Player.condition.hp.maxValue = maxHP;
-                    CharacterManager.Instance.Player.condition.hp.Set(currentHP);
-                    break;
-                case StatType.Mana:
-                    maxMP -= mod.value;
-                    maxMP = Mathf.Max(1, maxMP);
-                    currentMP = Mathf.Clamp(currentMP, 0, maxMP);
-                    CharacterManager.Instance.Player.condition.mp.maxValue = maxMP;
-                    CharacterManager.Instance.Player.condition.mp.Set(currentMP);
-                    break;
-                case StatType.AttackPower:
-                    currentAttackPower -= mod.value;
-                    currentAttackPower = Mathf.Max(0, currentAttackPower);
-                    break;
-            }
-        }
-
-        if (!string.IsNullOrEmpty(itemName))
-        {
-            equippedItemNames.Remove(itemName);
-            UpdateEquippedItemText();
-        }
-    }
-
-    private void UpdateEquippedItemText()
-    {
-        if(equippedItemListText != null)
-        {
-            equippedItemListText.text = "";
-
-            foreach(var item in equippedItemNames)
-            {
-                equippedItemListText.text += item + "\n";
-            }
-        }
+        CurrentAttackPower = Mathf.Max(0, CurrentAttackPower - amount);
     }
 }
