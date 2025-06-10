@@ -19,8 +19,6 @@ public class WaveManager : MonoBehaviour
 
     private IEnumerator StartWave()
     {
-        Debug.Log($"[WaveManager] 웨이브 시작: {enemiesPerWave}명 소환");
-
         currentAliveEnemies = 0;
 
         for(int i = 0; i < enemiesPerWave; i++)
@@ -57,8 +55,6 @@ public class WaveManager : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
-        Debug.Log($"[WaveManager] 현재 웨이브 적 수: {currentAliveEnemies}");
-
     }
 
     private Vector3 GetSpawnPosition(int index)
@@ -77,7 +73,6 @@ public class WaveManager : MonoBehaviour
 
         if(currentAliveEnemies <= 0)
         {
-            Debug.Log("[WaveManager] 웨이브 전멸 → 다음 웨이브 대기 중...");
             StartCoroutine(RespawnAfterDelay(respawnDelay));
         }
     }
