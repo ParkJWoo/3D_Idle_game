@@ -14,7 +14,9 @@ public class ObjectPool : MonoBehaviour
 {
     public static ObjectPool Instance;
 
-    public List<Pool> pools;
+    [Header("Pooling Settings")]
+    public List<Pool> pools = new List<Pool>();
+
     private Dictionary<string, Queue<GameObject>> poolDictionary;
 
     private void Awake()
@@ -22,14 +24,14 @@ public class ObjectPool : MonoBehaviour
         if(Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
+            InitializePools();
         }
 
         else
         {
             Destroy(gameObject);
         }
-
-        InitializePools();
     }
 
     private void InitializePools()
@@ -55,17 +57,19 @@ public class ObjectPool : MonoBehaviour
     {
         if(!poolDictionary.ContainsKey(tag))
         {
-            Debug.LogWarning($"Pool with tag {tag} doesn't exits");
+            Debug.LogWarning($"[ObjectPool] '{tag}' 태그의 풀을 찾을 수 없습니다");
             return null;
         }
 
-        GameObject obj = poolDictionary[tag].Count > 0 ? poolDictionary[tag].Dequeue() : null;
+        var queue = poolDictionary[tag];
 
-        if(obj == null)
+        if(queue.Count == 0)
         {
-            Debug.LogWarning($"Pool with tag {tag} is empty");
+            Debug.LogWarning($"[ObjectPool] '{tag}' 풀에 사용 가능한 오브젝트가 없습니다.");
             return null;
         }
+
+        GameObject obj = queue.Dequeue();
 
         obj.SetActive(true);
         obj.transform.position = position;
@@ -78,7 +82,7 @@ public class ObjectPool : MonoBehaviour
     {
         if(!poolDictionary.ContainsKey(tag))
         {
-            Debug.LogWarning($"No Pool with tag{tag}");
+            Debug.LogWarning($"[ObjectPool] '{tag}' 태그의 풀이 존재하지 않습니다. 객체를 제거합니다.");
             Destroy(obj);
             return;
         }

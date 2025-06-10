@@ -767,6 +767,7 @@ MonoBehaviour:
   - {fileID: 3775743993728405721, guid: aa684b04905ed3d4dbf50fe09eb14aa1, type: 3}
   - {fileID: 744040300343909685, guid: 022b2735a49d9c04199722f3293e8cc0, type: 3}
   - {fileID: 7045334952064601283, guid: 5933ce607ef28054e82ba707843c8d70, type: 3}
+  waveManager: {fileID: 0}
 --- !u!114 &8871703337196500222
 MonoBehaviour:
   m_ObjectHideFlags: 0

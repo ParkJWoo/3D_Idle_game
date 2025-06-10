@@ -7998,10 +7998,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 816556825}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81447b03661348c4db83c4b43d280500, type: 3}
+  m_Script: {fileID: 11500000, guid: 617aec996f6869342bd8044e1501dc4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPoolKey: Enemy
+  enemiesPerWave: 13
   spawnPoints:
   - {fileID: 44007382}
   - {fileID: 1702415773}
@@ -8016,7 +8016,8 @@ MonoBehaviour:
   - {fileID: 1483906332}
   - {fileID: 494180221}
   - {fileID: 714362253}
-  respawnDelay: 2
+  enemyPoolTag: Enemy
+  respawnDelay: 3
 --- !u!1 &816669838
 GameObject:
   m_ObjectHideFlags: 0

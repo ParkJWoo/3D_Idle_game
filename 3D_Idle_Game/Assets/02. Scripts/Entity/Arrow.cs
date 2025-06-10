@@ -34,23 +34,16 @@ public class Arrow : MonoBehaviour
     {
         if(other.CompareTag("Enemy"))
         {
-            Character target = other.GetComponent<Character>();
-            EnemyFSM enemyFSM = other.GetComponent<EnemyFSM>();
-            ArcherEnemyFSM archerEnemyFSM = other.GetComponent<ArcherEnemyFSM>();
-
-            if(target != null)
+            //  필요한 컴포넌트들을 한 번씩만 가져온다
+            if(other.TryGetComponent(out Character target))
             {
                 target.TakeDamage((int)damage);
             }
 
-            else
+            //  EnemyFSM이 존재할 경우에만 추격 시작
+            if(other.TryGetComponent(out EnemyFSM enemyFSM))
             {
-                Debug.LogWarning("[Arrow] Enemy에 Character 컴포넌트가 없습니다.");
-            }
-
-            if(enemyFSM != null)
-            {
-                enemyFSM.DamageAndChase();
+                enemyFSM.DamageAndChase();      //  맞은 적만 추격한다
             }
 
             ReleasePool();
@@ -71,11 +64,15 @@ public class Arrow : MonoBehaviour
     public static void SpawnAndFire(Vector3 position, Quaternion rotation, Vector3  direction, float speed)
     {
         GameObject arrow = ObjectPool.Instance.SpawnFromPool("Arrow", position, rotation);
-        Arrow arrowScript = arrow.GetComponent<Arrow>();
-
-        if(arrowScript != null)
+        
+        if(arrow != null && arrow.TryGetComponent(out Arrow arrowScript))
         {
             arrowScript.Fire(direction, speed);
+        }
+
+        else
+        {
+            Debug.LogWarning("[Arrow] ObjectPool에서 화살을 가져오거나 Arrow 컴포넌트가 없습니다.");
         }
     }
 }

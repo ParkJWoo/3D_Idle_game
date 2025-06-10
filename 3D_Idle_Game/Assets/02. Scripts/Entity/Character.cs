@@ -12,6 +12,7 @@ public abstract class Character : MonoBehaviour
     public int attackPower;
 
     protected Animator animator;
+    protected bool isDead = false;
 
     protected virtual void Start()
     {
@@ -50,15 +51,48 @@ public abstract class Character : MonoBehaviour
 
     public virtual void Die()
     {
+        if(isDead)
+        {
+            return;
+        }
+
+        isDead = true;
+
         if(animator != null)
         {
             animator.SetTrigger("IsDead");
-            Destroy(gameObject, 1.5f);
+        }
+    }
+
+    public virtual void ResetCharacter()
+    {
+        if(characterData != null)
+        {
+            maxHP = characterData.maxHP;
+            attackPower = characterData.attackPower;
         }
 
-        else
+        currentHP = maxHP;
+        isDead = false;
+
+        gameObject.SetActive(true);
+
+        if(animator == null)
         {
-            Destroy(gameObject);
+            animator = GetComponent<Animator>();
+        }
+
+        if(animator != null)
+        {
+            animator.Rebind();          //  애니메이션 초기화
+            animator.Update(0f);
+        }
+
+        EnemyFSM enemyFSM = GetComponent<EnemyFSM>();
+
+        if(enemyFSM != null)
+        {
+            enemyFSM.ResetState();
         }
     }
 }
