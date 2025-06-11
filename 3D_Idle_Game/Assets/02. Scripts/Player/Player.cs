@@ -12,6 +12,13 @@ public class Player : Character
 
     private void Awake()
     {
+        condition = GetComponent<PlayerCondition>();
+
+        if(condition == null)
+        {
+            Debug.LogError("Player에 PlayerCondition 컴포넌트가 없습니다!");
+        }
+
         //  싱글톤에 등록
         CharacterManager.Instance.RegisterPlayer(this);
 
