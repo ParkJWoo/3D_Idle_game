@@ -16,12 +16,26 @@ public class Shop : MonoBehaviour
     public Button purchaseButton;
 
     private ShopItemSlot selectSlot;
+
+    [Header("Shop Inventory (SO 가능)")]
     public List<ItemData> itemsForSale = new List<ItemData>();
     public List<int> itemPrices = new List<int>();
+
+    [Header("연동 컴포넌트")]
+    public Inventory playerInventory;       //  인스펙터에서 할당할 것!
 
     private void Start()
     {
         shopPanel.SetActive(false);
+
+        //  필요 시 슬롯 자동 생성
+        if(slotParent.childCount < itemsForSale.Count)
+        {
+            for(int i = slotParent.childCount; i < itemsForSale.Count; i++)
+            {
+                Instantiate(slotPrefabs, slotParent);
+            }
+        }
     }
 
     //  [상점] 버튼 이벤트 메서드
@@ -50,6 +64,7 @@ public class Shop : MonoBehaviour
             if(i < itemsForSale.Count)
             {
                 slot.Initialize(itemsForSale[i], itemPrices[i], this);
+                slot.gameObject.SetActive(true);
             }
 
             else
@@ -85,21 +100,32 @@ public class Shop : MonoBehaviour
     //  [구매] 버튼 이벤트 메서드
     public void PurchaseItem()
     {
-        if(selectSlot == null)
+        if (selectSlot == null || selectSlot.itemData == null)
         {
             return;
         }
 
         int price = selectSlot.price;
 
-        if (CharacterManager.Instance.SpendGold(price))
+        if(CharacterManager.Instance.SpendGold(price))
         {
-            Inventory.Instance.AddItem(selectSlot.itemData);
+            if(playerInventory == null)
+            {
+                Debug.LogError("[Shop] 플레이어 인벤토리가 연결되어 있지 않습니다!");
+                return;
+            }
+
+            bool added = playerInventory.AddItem(selectSlot.itemData);
+
+            if(!added)
+            {
+                Debug.LogWarning("[Shop] 인벤토리가 가득찼습니다!");
+            }
         }
 
         else
         {
-            Debug.LogWarning("[상점] 골드 부족!");
+            Debug.LogWarning("[Shop] 골드 부족!");
         }
 
         ClearSelection();

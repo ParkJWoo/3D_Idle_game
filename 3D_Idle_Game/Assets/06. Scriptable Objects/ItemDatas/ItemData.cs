@@ -44,6 +44,7 @@ public class StatModifier
 public class ItemData : ScriptableObject
 {
     [Header("Info")]
+    public string itemID;
     public string displayName;
     public string description;
     public ItemType itemType;

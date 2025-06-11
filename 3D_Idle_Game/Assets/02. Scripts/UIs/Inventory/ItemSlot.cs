@@ -4,27 +4,33 @@ using UnityEngine.UI;
 
 public class ItemSlot : MonoBehaviour
 {
+    [Header("Slot Data")]
     public int index;
-    public ItemData itemData;
-    public int quantity;
-    public bool isEquipped;
+    public ItemData itemData { get; private set; }
+    public int quantity { get; private set; }
+    public bool isEquipped { get; private set; }
 
     [Header("UI")]
     public Image icon;
     public TextMeshProUGUI quantityText;
     public Outline outline;
 
-    //  아이템 세팅 메서드
+    //  인벤토리 참조용
+    [HideInInspector]
+    public Inventory inventory;
+
+    //  아이템 세팅 
     public void SetItem(ItemData data, int amount = 1)
     {
         itemData = data;
         quantity = amount;
         icon.sprite = data.icon;
         icon.enabled = true;
+        isEquipped = false;
         UpdateSlotUI();
     }
 
-    //  슬롯의 변경되는 것들을 갱신해주는 메서드
+    //  슬롯 UI 갱신
     public void UpdateSlotUI()
     {
         icon.enabled = (itemData != null);
@@ -32,14 +38,16 @@ public class ItemSlot : MonoBehaviour
         UpdateOutline();
     }
 
-    //  슬롯 테두리 갱신 메서드
+    //  슬롯 테두리 갱신
     public void UpdateOutline()
     {
         if (outline != null)
+        {
             outline.enabled = isEquipped;
+        }
     }
 
-    //  초기화 메서드
+    //  슬롯 초기화
     public void Clear()
     {
         itemData = null;
@@ -50,9 +58,60 @@ public class ItemSlot : MonoBehaviour
         UpdateOutline();
     }
 
-    //  슬롯 선택 시 인벤토리에 해당 슬롯이 선택되었음을 알리는 메서드
+    //  인벤토리에 슬롯 선택 알림
     public void OnClick()
     {
-        Inventory.Instance.SelectSlot(this);
+        if (inventory != null)
+        {
+            inventory.SelectSlot(this);
+        }
+
+        else
+        {
+            //  만약 인스펙터에 주입 안 되었다면 부모에서 자동 세팅을 시도한다.
+            inventory = GetComponentInParent<Inventory>();
+
+            if(inventory != null)
+            {
+                inventory.SelectSlot(this);
+            }
+
+            else
+            {
+                Debug.LogError("[ItemSlot] Inventory 참조가 없습니다!");
+            }
+        }
+    }
+
+    //  슬롯 내부에서 수량 감소 등 관리 필요 시 메서드 제공
+    public void AddQuantity(int delta)
+    {
+        quantity += delta;
+
+        if(quantity < 0)
+        {
+            quantity = 0;
+        }
+
+        UpdateSlotUI();
+    }
+
+    public void SubtractQuantity(int value = 1)
+    {
+        quantity -= value;
+
+        if(quantity < 0)
+        {
+            quantity = 0;
+        }
+
+        UpdateSlotUI();
+    }
+
+    //  착용 여부 갱신
+    public void SetEquipped(bool equipped)
+    {
+        isEquipped = equipped;
+        UpdateOutline();
     }
 }

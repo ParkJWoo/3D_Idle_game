@@ -962,6 +962,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 81abda0dfe68d004da7e7173984f6706, type: 2}
   - {fileID: 11400000, guid: 4652b8e71067ed74baaf5084111e8098, type: 2}
   itemPrices: 320000003200000064000000
+  playerInventory: {fileID: 0}
 --- !u!114 &310999393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2034,6 +2035,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fda8a1e35c641b4993a54bca4a49660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemDataTable: {fileID: 11400000, guid: f7e04a250ce463f4b87d6da724c8f0cb, type: 2}
   slotParent: {fileID: 1189887957}
   slotPrefab: {fileID: 1825472572344745057, guid: 2dcddf14856586646baf8b4ba773e48a,
     type: 3}

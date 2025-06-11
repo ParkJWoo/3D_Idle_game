@@ -5,7 +5,8 @@ using System.Collections.Generic;
 
 public class Inventory : MonoBehaviour
 {
-    public static Inventory Instance { get; private set; }
+    [Header("Data Table")]
+    public ItemDataTable itemDataTable;
 
     [Header("Slot Settings")]
     public Transform slotParent;
@@ -24,14 +25,10 @@ public class Inventory : MonoBehaviour
 
     private void Awake()
     {
-        if(Instance == null)
+        //  Instance 싱글톤 제거! 필요 시 GameManager 등에서 참조
+        if(itemDataTable == null)
         {
-            Instance = this;
-        }
-
-        else
-        {
-            Destroy(gameObject);
+            Debug.LogError("[Inventory] itemDataTable(SO)가 할당되지 않았습니다!"); ;
         }
     }
 
@@ -44,7 +41,19 @@ public class Inventory : MonoBehaviour
         cancelButton.gameObject.SetActive(true);
     }
 
-    //  아이템 획득 시, 인벤토리에 들어가는 것을 처리하는 메서드
+    public bool AddItemByID(string itemID)
+    {
+        var data = GetItemData(itemID);
+
+        if (data == null)
+        {
+            Debug.LogError($"[Inventory] 아이템 ID : {itemID}에 해당하는 아이템이 없습니다!");
+            return false;
+        }
+
+        return AddItem(data);
+    }
+
     public bool AddItem(ItemData data)
     {
         if(data.canStack)
@@ -53,8 +62,7 @@ public class Inventory : MonoBehaviour
             {
                 if(slot.itemData == data && slot.quantity < data.maxStackAmount)
                 {
-                    slot.quantity++;
-                    slot.UpdateSlotUI();
+                    slot.AddQuantity(1);
                     return true;
                 }
             }
@@ -69,8 +77,28 @@ public class Inventory : MonoBehaviour
             }
         }
 
-        Debug.LogWarning("[Inventory] 인벤토리가 가득찼읍니다");
+        Debug.LogWarning("[Inventory] 인벤토리가 가득찼습니다!");
+
         return false;
+    }
+
+    //  SO로부터 아이템을 조회하는 메서드
+    public ItemData GetItemData(string itemID)
+    {
+        if(itemDataTable == null)
+        {
+            return null;
+        }
+
+        foreach(var item in itemDataTable.items)
+        {
+            if(item.itemID == itemID)
+            {
+                return item;
+            }
+        }
+
+        return null;
     }
 
     //  플레이어가 아이템 슬롯을 선택했을 때, 하단 설명 UI에 텍스트를 띄워주는 메서드
@@ -85,20 +113,20 @@ public class Inventory : MonoBehaviour
     //  [사용] 버튼 이벤트 메서드
     public void UseButton()
     {
-        if (selectedSlot == null || selectedSlot.itemData == null)
+        if(selectedSlot == null || selectedSlot.itemData == null)
         {
             return;
         }
 
-        if (selectedSlot.itemData.itemType != ItemType.Consumable)
+        if(selectedSlot.itemData.itemType != ItemType.Consumable)
         {
-            Debug.LogWarning("[Inventory] 소비 아이템이 아닙니다");
+            Debug.LogWarning("[Inventory] 소비 아이템이 아닙니다!");
             return;
         }
 
-        foreach (var effect in selectedSlot.itemData.consumableEffects)
+        foreach(var effect in selectedSlot.itemData.consumableEffects)
         {
-            switch (effect.type)                                        //  소비 아이템의 유형에 따라 각각 해당하는 메서드를 호출하여 적용.
+            switch(effect.type)
             {
                 case ConsumableType.Health:
                     PlayerStat.Instance.Heal((int)effect.value);
@@ -114,14 +142,13 @@ public class Inventory : MonoBehaviour
             }
         }
 
-        //  사용한 아이템은 인벤토리 슬롯 내에서 수량을 감소시킴.
         RemoveSelectedItem();
     }
-    
-    //  기존에 아이템 선택 후, 다른 아이템을 선택했을 때, 해당 아이템의 정보를 하단 UI에 바꿔서 출력하기 위한 메서드
+
+    //  아이템 사용 후 인벤토리에서 제거
     private void RemoveSelectedItem()
     {
-        selectedSlot.quantity--;
+        selectedSlot.SubtractQuantity(1);
 
         if(selectedSlot.quantity <= 0)
         {
